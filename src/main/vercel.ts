@@ -26,6 +26,7 @@ interface Resolved {
   projectId: string
   teamId?: string
   dashboardUrl: string
+  siteUrl?: string
 }
 
 class VercelError extends Error {
@@ -59,27 +60,65 @@ async function teamsOf(token: string): Promise<{ id: string; slug: string }[]> {
   }
 }
 
-/** Il progetto si trova dal nome o ID scritto nelle impostazioni, altrimenti dal repo GitHub collegato */
+interface RawProject {
+  id: string
+  name: string
+  link?: { type?: string; org?: string; repo?: string; projectNamespace?: string; projectName?: string }
+  targets?: { production?: { alias?: string[] } }
+  alias?: { domain?: string }[]
+}
+
+/** "owner/repo" in minuscolo dall'indirizzo del remote (https://github.com/owner/repo) */
+export function repoSlug(url: string | undefined): string | undefined {
+  const m = url?.match(/[:/]([^/:]+)\/([^/]+?)(?:\.git)?\/?$/)
+  return m ? `${m[1]}/${m[2]}`.toLowerCase() : undefined
+}
+
+const linkSlug = (p: RawProject): string | undefined => {
+  const org = p.link?.org ?? p.link?.projectNamespace
+  const repo = p.link?.repo ?? p.link?.projectName
+  return org && repo ? `${org}/${repo}`.toLowerCase() : undefined
+}
+
+/** Indirizzo pubblico della produzione: il dominio più corto, senza quelli dei branch */
+export function siteOf(p: RawProject): string | undefined {
+  const names = [...(p.targets?.production?.alias ?? []), ...(p.alias ?? []).map((a) => a.domain ?? '')]
+    .filter((d) => d && !d.includes('-git-'))
+    .sort((a, b) => a.length - b.length)
+  return names[0] ? `https://${names[0]}` : undefined
+}
+
+/**
+ * Cerca il progetto in un account o team: dal nome o ID scritto nelle impostazioni,
+ * altrimenti dal repo GitHub collegato a Vercel (confrontato senza badare alle maiuscole).
+ */
 async function findIn(
   token: string,
   teamId: string | undefined,
   ref: string | undefined,
   repoUrl: string | undefined
-): Promise<{ id: string; name: string } | 'denied' | undefined> {
+): Promise<RawProject | 'denied' | undefined> {
+  const wanted = repoSlug(repoUrl)
+  const repoName = wanted?.split('/')[1]
   try {
-    if (ref)
-      return await get<{ id: string; name: string }>(token, `/v9/projects/${encodeURIComponent(ref)}`, {
-        teamId
-      })
-    if (repoUrl) {
-      const j = await get<{ projects?: { id: string; name: string }[] }>(token, '/v10/projects', {
-        teamId,
-        repoUrl
-      })
-      return j.projects?.[0]
+    let from: string | undefined
+    for (let page = 0; page < 5; page++) {
+      const j = await get<{ projects?: RawProject[]; pagination?: { next?: number | null } }>(
+        token,
+        '/v10/projects',
+        { teamId, limit: '100', from }
+      )
+      const list = j.projects ?? []
+      const hit = ref
+        ? list.find((p) => p.id === ref || p.name.toLowerCase() === ref.toLowerCase())
+        : (list.find((p) => wanted && linkSlug(p) === wanted) ??
+          list.find((p) => repoName && p.name.toLowerCase() === repoName))
+      if (hit) return hit
+      if (!j.pagination?.next) break
+      from = String(j.pagination.next)
     }
   } catch (e) {
-    // 404: non è in questo team. 401/403: il token non vale qui, si prova il prossimo
+    // 401/403: il token non vale per questo account o team, si prova il prossimo
     if (!(e instanceof VercelError)) throw e
     if (e.status === 401 || e.status === 403) return 'denied'
   }
@@ -115,7 +154,15 @@ export async function resolveProject(
     const r: Resolved = {
       projectId: p.id,
       teamId: team.id || undefined,
-      dashboardUrl: owner ? `https://vercel.com/${owner}/${p.name}` : 'https://vercel.com/dashboard'
+      dashboardUrl: owner ? `https://vercel.com/${owner}/${p.name}` : 'https://vercel.com/dashboard',
+      siteUrl: siteOf(p)
+    }
+    if (!r.siteUrl) {
+      try {
+        r.siteUrl = siteOf(await get<RawProject>(token, `/v9/projects/${p.id}`, { teamId: r.teamId }))
+      } catch {
+        // resta l'indirizzo dell'ultimo deploy
+      }
     }
     cache.set(key, r)
     return r
@@ -146,11 +193,13 @@ export async function readVercel(
       limit: '20'
     })
     const list = (json.deployments ?? []).map(toDeploy)
+    const prod = list.find((d) => d.target === 'production' && d.state === 'READY')
     return {
       ok: true,
       dashboardUrl: project.dashboardUrl,
       latest: list[0],
-      production: list.find((d) => d.target === 'production' && d.state === 'READY'),
+      // Il dominio pubblico (es. progetto.vercel.app) invece dell'indirizzo del singolo deploy, spesso protetto
+      production: prod && { ...prod, url: project.siteUrl ?? prod.url },
       latestPreview: list.find((d) => d.target !== 'production' && d.state === 'READY')
     }
   } catch (e) {

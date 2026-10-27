@@ -297,7 +297,9 @@ function registerIpc(): void {
         })
       }
     const repoUrl = (await readGitInfo(p.path, 1)).remoteUrl
-    return readVercel(token, p.vercelProject, repoUrl, account?.vercelTeamId)
+    const r = await readVercel(token, p.vercelProject, repoUrl, account?.vercelTeamId)
+    if (!r.ok) console.warn(`[vercel] ${p.name} (${repoUrl ?? 'senza remote'}): ${r.error}`)
+    return r
   })
 
   ipcMain.handle('steam:games', () => findSteamGames(store.config.steamPath))

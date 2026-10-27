@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { readVercel } from './vercel'
+import { readVercel, repoSlug } from './vercel'
 
 type Route = (url: URL) => { status: number; body?: unknown } | undefined
 
@@ -15,6 +15,13 @@ function mockFetch(route: Route): void {
 
 afterEach(() => vi.unstubAllGlobals())
 
+describe('repoSlug', () => {
+  it('legge owner/repo da https e ssh', () => {
+    expect(repoSlug('https://github.com/Acme/ShopApp')).toBe('acme/shopapp')
+    expect(repoSlug('git@github.com:Acme/ShopApp.git')).toBe('acme/shopapp')
+  })
+})
+
 describe('readVercel', () => {
   it('trova il progetto dal repo in un team, anche senza Team ID nelle impostazioni', async () => {
     mockFetch((u) => {
@@ -23,7 +30,22 @@ describe('readVercel', () => {
         return { status: 200, body: { teams: [{ id: 'team_1', slug: 'acme' }] } }
       if (u.pathname === '/v10/projects' && !team) return { status: 403 }
       if (u.pathname === '/v10/projects' && team === 'team_1')
-        return { status: 200, body: { projects: [{ id: 'prj_1', name: 'shop' }] } }
+        return {
+          status: 200,
+          body: {
+            projects: [
+              { id: 'prj_0', name: 'other', link: { type: 'github', org: 'acme', repo: 'blog' } },
+              {
+                id: 'prj_1',
+                name: 'shop-site',
+                link: { type: 'github', org: 'Acme', repo: 'Shop' },
+                targets: {
+                  production: { alias: ['shop-site-git-main-acme.vercel.app', 'shop-site.vercel.app'] }
+                }
+              }
+            ]
+          }
+        }
       if (u.pathname === '/v6/deployments' && team === 'team_1')
         return {
           status: 200,
@@ -38,8 +60,8 @@ describe('readVercel', () => {
     })
     const r = await readVercel('tok-a', undefined, 'https://github.com/acme/shop')
     expect(r.ok).toBe(true)
-    expect(r.dashboardUrl).toBe('https://vercel.com/acme/shop')
-    expect(r.production?.url).toBe('https://shop-a.vercel.app')
+    expect(r.dashboardUrl).toBe('https://vercel.com/acme/shop-site')
+    expect(r.production?.url).toBe('https://shop-site.vercel.app')
     expect(r.latestPreview?.url).toBe('https://shop-b.vercel.app')
   })
 
