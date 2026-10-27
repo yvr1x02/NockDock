@@ -1,0 +1,18 @@
+appId: io.github.yvr1x02.nockdock
+productName: Nockdock
+directories:
+  output: dist
+  buildResources: build
+files:
+  - out/**/*
+  - package.json
+win:
+  target: nsis
+  icon: build/icon.ico
+nsis:
+  oneClick: true
+  perMachine: false
+  artifactName: Nockdock-Setup-${version}.${ext}
+publish:
+  provider: github
+  releaseType: draft

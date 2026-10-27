@@ -1,0 +1,175 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-ground: #0e1013;
+  --color-card: #15181d;
+  --color-raised: #1b1f25;
+  --color-line: #22262d;
+  --color-line-strong: #262a31;
+  --color-dash: #3a3f47;
+  --color-ink: #e8eaed;
+  --color-soft: #c4c8ce;
+  --color-muted: #9aa0a6;
+  --color-dim: #5f656e;
+  --color-ok: #3dd68c;
+  --color-warn: #f5c451;
+  --color-err: #ffa24c;
+  --color-divider: #1f232a;
+  --color-panel: #14171c;
+  --color-panel-line: #2a2f37;
+  --color-scrim: rgba(5, 6, 8, 0.74);
+  --color-deep: #07080a;
+  --color-tab: #8a9099;
+  --color-warn-soft: #f5d27a;
+  --color-warn-bg: #221e14;
+  --color-warn-line: #4a3f22;
+  --color-ok-line: #1f4a35;
+  --color-thumb: #2c3139;
+  --font-sans: 'Geist', 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', 'Cascadia Mono', Consolas, ui-monospace, monospace;
+}
+
+/* Colore d'accento: cambia con l'account attivo */
+@theme inline {
+  --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
+  --color-on-accent: var(--on-accent);
+  --color-accent-tint: var(--accent-tint);
+}
+
+:root {
+  /* Valori di riserva: quelli veri arrivano dal colore dell'account attivo */
+  --accent: #b3202f;
+  --accent-text: #ff6e7a;
+  --on-accent: #ffffff;
+  --accent-tint: rgba(179, 32, 47, 0.22);
+}
+
+/* Tema chiaro: stessi nomi, colori diversi. La schermata di riposo resta scura (data-theme="dark"). */
+[data-theme='light'] {
+  --color-ground: #f3f4f6;
+  --color-card: #ffffff;
+  --color-raised: #eef0f3;
+  --color-line: #e2e5ea;
+  --color-line-strong: #d6dae1;
+  --color-dash: #b9bfc8;
+  --color-ink: #15181d;
+  --color-soft: #39404c;
+  --color-muted: #646b76;
+  --color-dim: #959ca6;
+  --color-ok: #148a4f;
+  --color-warn: #a86b00;
+  --color-err: #c4501b;
+  --color-divider: #e2e5ea;
+  --color-panel: #ffffff;
+  --color-panel-line: #d6dae1;
+  --color-scrim: rgba(20, 24, 30, 0.38);
+  --color-tab: #646b76;
+  --color-warn-soft: #8a5a00;
+  --color-warn-bg: #fdf3dc;
+  --color-warn-line: #ecd29a;
+  --color-ok-line: #a9dcc0;
+  --color-thumb: #c9ced6;
+}
+
+[data-theme='dark'] {
+  --color-ground: #0e1013;
+  --color-card: #15181d;
+  --color-raised: #1b1f25;
+  --color-line: #22262d;
+  --color-line-strong: #262a31;
+  --color-dash: #3a3f47;
+  --color-ink: #e8eaed;
+  --color-soft: #c4c8ce;
+  --color-muted: #9aa0a6;
+  --color-dim: #5f656e;
+  --color-ok: #3dd68c;
+  --color-warn: #f5c451;
+  --color-err: #ffa24c;
+  --color-divider: #1f232a;
+  --color-panel: #14171c;
+  --color-panel-line: #2a2f37;
+  --color-scrim: rgba(5, 6, 8, 0.74);
+  --color-tab: #8a9099;
+  --color-warn-soft: #f5d27a;
+  --color-warn-bg: #221e14;
+  --color-warn-line: #4a3f22;
+  --color-ok-line: #1f4a35;
+  --color-thumb: #2c3139;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--color-ground);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition:
+    transform 80ms ease,
+    background-color 120ms ease;
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+textarea,
+input {
+  user-select: text;
+}
+
+/* Cursore dei volumi e della luminosità, grande per il dito */
+input[type='range'].slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 36px;
+  background: transparent;
+  cursor: pointer;
+}
+input[type='range'].slider::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(
+    to right,
+    var(--accent) 0%,
+    var(--accent) var(--fill, 0%),
+    var(--color-line) var(--fill, 0%),
+    var(--color-line) 100%
+  );
+}
+input[type='range'].slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  margin-top: -8px;
+  border-radius: 50%;
+  background: var(--color-ink);
+  border: 3px solid var(--accent);
+}
+input[type='range'].slider:disabled {
+  opacity: 0.4;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-thumb);
+  border-radius: 3px;
+}

@@ -1,0 +1,66 @@
+{
+  "frameWidth": 48,
+  "frameHeight": 64,
+  "animations": {
+    "idle": {
+      "start": 0,
+      "count": 8,
+      "fps": 4,
+      "loop": true
+    },
+    "idleSide": {
+      "start": 8,
+      "count": 8,
+      "fps": 4,
+      "loop": true
+    },
+    "look": {
+      "start": 16,
+      "count": 17,
+      "fps": 5,
+      "loop": false
+    },
+    "walkRight": {
+      "start": 33,
+      "count": 6,
+      "fps": 8,
+      "loop": true
+    },
+    "walkLeft": {
+      "start": 39,
+      "count": 6,
+      "fps": 8,
+      "loop": true
+    },
+    "jump": {
+      "start": 45,
+      "count": 9,
+      "fps": 11,
+      "loop": false
+    },
+    "surprise": {
+      "start": 54,
+      "count": 6,
+      "fps": 6,
+      "loop": false
+    },
+    "sleep": {
+      "start": 60,
+      "count": 8,
+      "fps": 3,
+      "loop": true
+    },
+    "work": {
+      "start": 68,
+      "count": 8,
+      "fps": 5,
+      "loop": true
+    },
+    "think": {
+      "start": 76,
+      "count": 8,
+      "fps": 4,
+      "loop": true
+    }
+  }
+}

@@ -1,0 +1,33 @@
+name: Bug report
+description: Something doesn't work as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected and what happened instead. Screenshots help.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Shown in Windows under Settings → Apps, or in package.json
+      placeholder: 0.6.0
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: Windows 11 24H2
+  - type: input
+    id: screen
+    attributes:
+      label: Dock screen
+      placeholder: Waveshare 7inch 1024×600, or "window"
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error messages
+      description: Any message shown by the dock (for the Desk tab, the text on the card)
+      render: text
