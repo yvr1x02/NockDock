@@ -1,0 +1,5 @@
+# Pacchetti autorizzati a eseguire script di installazione
+allowBuilds:
+  electron: true
+  esbuild: true
+  electron-winstaller: true

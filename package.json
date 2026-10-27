@@ -33,7 +33,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "dist": "electron-vite build && electron-builder --win"
+    "dist": "electron-vite build && electron-builder --win",
+    "postinstall": "install-electron"
   },
   "dependencies": {
     "qrcode": "^1.5.4"
@@ -61,14 +62,8 @@
     "vite": "^8.3.5",
     "vitest": "^5.0.5"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "electron",
-      "esbuild"
-    ]
-  },
   "engines": {
     "node": ">=22"
   },
-  "packageManager": "pnpm@10.28.0"
+  "packageManager": "pnpm@12.15.0"
 }
