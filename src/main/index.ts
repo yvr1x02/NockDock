@@ -193,6 +193,7 @@ function registerIpc(): void {
   ipcMain.handle('audio:output', (_e, id: string) => winHelper.call('output', id))
   ipcMain.handle('monitor:list', () => winHelper.call('monitors'))
   ipcMain.handle('monitor:brightness', (_e, id: string, v: number) => winHelper.call('bright', id, v))
+  ipcMain.handle('media:state', () => winHelper.call('mediastate'))
   ipcMain.handle('media:cmd', (_e, cmd: MediaCommand) =>
     ['playpause', 'next', 'prev'].includes(cmd)
       ? winHelper.call('media', cmd)

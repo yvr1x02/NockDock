@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Music: the play/pause button follows what Windows is playing, with the track title.
 - After a touch on the dock, the pointer goes back where it was on the other monitors (Settings → General → Touch).
 - Lighter dark theme: background, cards and borders are easier to see on the dock screen.
 - Twitch removed; the Scenes tab is now Games, with a gamepad icon.

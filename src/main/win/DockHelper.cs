@@ -518,6 +518,60 @@ namespace DockWin
             return Ok();
         }
 
+        // ---- Stato della musica: le API dei controlli multimediali di Windows (WinRT), via reflection
+
+        const string WinRtMedia = ", Windows.Media.Control, ContentType=WindowsRuntime";
+        static System.Reflection.MethodInfo asTask;
+        static object mediaManager;
+
+        /// Aspetta un'operazione asincrona di WinRT (IAsyncOperation<T>) senza async/await
+        static object Await(object operation, Type result)
+        {
+            if (asTask == null)
+            {
+                var asm = System.Reflection.Assembly.Load("System.Runtime.WindowsRuntime, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
+                foreach (var m in asm.GetType("System.WindowsRuntimeSystemExtensions").GetMethods())
+                {
+                    var ps = m.GetParameters();
+                    if (m.Name == "AsTask" && m.IsGenericMethodDefinition && ps.Length == 1 && ps[0].ParameterType.Name == "IAsyncOperation`1")
+                    {
+                        asTask = m;
+                        break;
+                    }
+                }
+            }
+            var task = (System.Threading.Tasks.Task)asTask.MakeGenericMethod(result).Invoke(null, new object[] { operation });
+            if (!task.Wait(3000)) throw new Exception("Windows non ha risposto in tempo");
+            return task.GetType().GetProperty("Result").GetValue(task, null);
+        }
+
+        static object Prop(object o, string name)
+        {
+            return o.GetType().GetProperty(name).GetValue(o, null);
+        }
+
+        static string MediaState()
+        {
+            var managerType = Type.GetType("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager" + WinRtMedia);
+            if (managerType == null) return "{\"ok\":false,\"error\":\"Non disponibile su questa versione di Windows\"}";
+            if (mediaManager == null) mediaManager = Await(managerType.GetMethod("RequestAsync").Invoke(null, null), managerType);
+            var session = managerType.GetMethod("GetCurrentSession").Invoke(mediaManager, null);
+            if (session == null) return "{\"ok\":true,\"status\":\"none\",\"title\":\"\",\"artist\":\"\"}";
+            var info = session.GetType().GetMethod("GetPlaybackInfo").Invoke(session, null);
+            string raw = Prop(info, "PlaybackStatus").ToString();
+            string status = raw == "Playing" ? "playing" : raw == "Paused" ? "paused" : "stopped";
+            string title = "", artist = "";
+            try
+            {
+                var propsType = Type.GetType("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties" + WinRtMedia);
+                var props = Await(session.GetType().GetMethod("TryGetMediaPropertiesAsync").Invoke(session, null), propsType);
+                title = (Prop(props, "Title") as string) ?? "";
+                artist = (Prop(props, "Artist") as string) ?? "";
+            }
+            catch (Exception) { }
+            return "{\"ok\":true,\"status\":" + Json.Q(status) + ",\"title\":" + Json.Q(title) + ",\"artist\":" + Json.Q(artist) + "}";
+        }
+
         public static string Run(string[] p)
         {
             string cmd = p.Length > 1 ? p[1] : "";
@@ -533,6 +587,7 @@ namespace DockWin
                 case "monitors": return Monitors();
                 case "bright": return Brightness(p[2], p[3]);
                 case "media": return Media(p[2]);
+                case "mediastate": return MediaState();
                 case "cursortrack": return CursorTrack(p[2], p[3], p[4], p[5]);
                 case "cursorrestore": return CursorRestore();
                 default: return "{\"ok\":false,\"error\":\"Comando sconosciuto\"}";

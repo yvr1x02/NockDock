@@ -25,6 +25,7 @@ const api: DockApi = {
   getMonitors: () => ipcRenderer.invoke('monitor:list'),
   setBrightness: (id, v) => ipcRenderer.invoke('monitor:brightness', id, v),
   media: (cmd) => ipcRenderer.invoke('media:cmd', cmd),
+  mediaState: () => ipcRenderer.invoke('media:state'),
   touchEnd: () => ipcRenderer.send('touch:end'),
   openConfig: () => ipcRenderer.invoke('config:open'),
   getConfigPath: () => ipcRenderer.invoke('config:path'),

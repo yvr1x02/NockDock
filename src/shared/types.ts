@@ -201,6 +201,15 @@ export interface MonitorBrightness {
 
 export type MediaCommand = 'playpause' | 'next' | 'prev'
 
+/** Cosa sta suonando, letto dai controlli multimediali di Windows */
+export interface MediaState {
+  ok: boolean
+  error?: string
+  status?: 'playing' | 'paused' | 'stopped' | 'none'
+  title?: string
+  artist?: string
+}
+
 /** vercel.<id account> */
 export type SecretKey = string
 
@@ -329,6 +338,7 @@ export interface DockApi {
   getMonitors(): Promise<{ ok: boolean; error?: string; monitors: MonitorBrightness[] }>
   setBrightness(id: string, value: number): Promise<ActionResult>
   media(cmd: MediaCommand): Promise<ActionResult>
+  mediaState(): Promise<MediaState>
   /** Fine di un tocco sul dock: rimette il puntatore al suo posto */
   touchEnd(): void
   openConfig(): Promise<ActionResult>

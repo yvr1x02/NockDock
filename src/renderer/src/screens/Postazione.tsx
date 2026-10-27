@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { AudioState, MonitorBrightness } from '@shared/types'
+import type { AudioState, MediaCommand, MediaState, MonitorBrightness } from '@shared/types'
 import { api, useDock } from '../lib/dock'
 import { Card } from '../components/ui'
 import { Icon } from '../components/Icon'
@@ -208,26 +208,7 @@ export function Postazione() {
             ))}
           </div>
         </Card>
-        <Card title={t('Musica')} className="shrink-0 gap-2">
-          <div className="grid grid-cols-3 gap-2">
-            <MediaButton
-              icon="prev"
-              label={t('Brano precedente')}
-              onClick={() => api.media('prev').then(report)}
-            />
-            <MediaButton
-              icon="pause"
-              label={t('Play / pausa')}
-              primary
-              onClick={() => api.media('playpause').then(report)}
-            />
-            <MediaButton
-              icon="next"
-              label={t('Brano successivo')}
-              onClick={() => api.media('next').then(report)}
-            />
-          </div>
-        </Card>
+        <Music report={report} />
       </div>
     </div>
   )
@@ -300,8 +281,57 @@ function VolumeRow(props: {
   )
 }
 
+/**
+ * Tasti della musica. L'icona segue quello che Windows dice che sta suonando;
+ * se Windows non lo sa dire, si alterna a ogni tocco.
+ */
+function Music({ report }: { report: (r: { ok: boolean; error?: string }) => void }) {
+  const [state, setState] = useState<MediaState | null>(null)
+  const [playing, setPlaying] = useState(false)
+
+  const apply = useCallback((s: MediaState): void => {
+    setState(s)
+    if (s.ok) setPlaying(s.status === 'playing')
+  }, [])
+  const read = useCallback((): void => void api.mediaState().then(apply), [apply])
+
+  useEffect(() => {
+    const tick = (): void => void api.mediaState().then(apply)
+    tick()
+    const timer = setInterval(tick, POLL_MS)
+    return () => clearInterval(timer)
+  }, [apply])
+
+  const press = (cmd: MediaCommand): void => {
+    if (cmd === 'playpause') setPlaying((p) => !p)
+    void api.media(cmd).then((r) => {
+      report(r)
+      // Il lettore ci mette un attimo a cambiare stato
+      setTimeout(read, 600)
+    })
+  }
+
+  const track = state?.ok && state.title ? [state.title, state.artist].filter(Boolean).join(' · ') : ''
+
+  return (
+    <Card title={t('Musica')} className="shrink-0 gap-2">
+      {track && <span className="-mt-1 truncate text-xs text-muted">{track}</span>}
+      <div className="grid grid-cols-3 gap-2">
+        <MediaButton icon="prev" label={t('Brano precedente')} onClick={() => press('prev')} />
+        <MediaButton
+          icon={playing ? 'pause' : 'play'}
+          label={playing ? t('Pausa') : t('Riproduci')}
+          primary
+          onClick={() => press('playpause')}
+        />
+        <MediaButton icon="next" label={t('Brano successivo')} onClick={() => press('next')} />
+      </div>
+    </Card>
+  )
+}
+
 function MediaButton(props: {
-  icon: 'prev' | 'next' | 'pause'
+  icon: 'prev' | 'next' | 'pause' | 'play'
   label: string
   primary?: boolean
   onClick: () => void
