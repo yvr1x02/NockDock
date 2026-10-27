@@ -1,4 +1,5 @@
-// Aiutante di Windows per il dock: volume per app, uscita audio, luminosità dei monitor e tasti multimediali.
+// Aiutante di Windows per il dock: volume per app, uscita audio, luminosità dei monitor, tasti multimediali
+// e ritorno del puntatore dopo un tocco.
 // Gira dentro un processo PowerShell sempre acceso (Add-Type) e risponde a una richiesta per riga:
 //   richiesta: id <TAB> comando <TAB> argomenti...
 //   risposta:  id <TAB> json
@@ -171,6 +172,9 @@ namespace DockWin
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)] public string device;
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    struct CursorPoint { public int x, y; }
+
     static class Native
     {
         public delegate bool MonitorEnumProc(IntPtr monitor, IntPtr hdc, IntPtr rect, IntPtr data);
@@ -183,6 +187,9 @@ namespace DockWin
         [DllImport("dxva2.dll")] public static extern bool SetMonitorBrightness(IntPtr monitor, int value);
         [DllImport("user32.dll")] public static extern void keybd_event(byte vk, byte scan, int flags, IntPtr extra);
         [DllImport("ole32.dll")] public static extern int PropVariantClear(ref PropVariant pv);
+        [DllImport("user32.dll")] public static extern bool GetCursorPos(out CursorPoint p);
+        [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y);
+        [DllImport("user32.dll")] public static extern IntPtr SetThreadDpiAwarenessContext(IntPtr context);
     }
 
     // ---------- Piccolo scrittore JSON ----------
@@ -452,6 +459,65 @@ namespace DockWin
             return Ok();
         }
 
+        // ---- Puntatore: dopo un tocco sul dock torna dove l'aveva lasciato il mouse
+
+        static readonly object cursorLock = new object();
+        static int dockLeft, dockTop, dockRight, dockBottom;
+        static bool hasCursor, tracking;
+        static int lastX, lastY;
+
+        /// Coordinate in pixel reali su tutti i monitor, qualunque sia il ridimensionamento di Windows
+        static void DpiAware()
+        {
+            try { Native.SetThreadDpiAwarenessContext(new IntPtr(-4)); } catch (Exception) { }
+        }
+
+        static string CursorTrack(string l, string t, string r, string b)
+        {
+            lock (cursorLock)
+            {
+                dockLeft = int.Parse(l, CultureInfo.InvariantCulture);
+                dockTop = int.Parse(t, CultureInfo.InvariantCulture);
+                dockRight = int.Parse(r, CultureInfo.InvariantCulture);
+                dockBottom = int.Parse(b, CultureInfo.InvariantCulture);
+            }
+            if (tracking) return Ok();
+            tracking = true;
+            var thread = new System.Threading.Thread(() =>
+            {
+                DpiAware();
+                while (true)
+                {
+                    CursorPoint p;
+                    if (Native.GetCursorPos(out p))
+                    {
+                        lock (cursorLock)
+                        {
+                            bool onDock = p.x >= dockLeft && p.x < dockRight && p.y >= dockTop && p.y < dockBottom;
+                            if (!onDock) { lastX = p.x; lastY = p.y; hasCursor = true; }
+                        }
+                    }
+                    System.Threading.Thread.Sleep(40);
+                }
+            });
+            thread.IsBackground = true;
+            thread.Start();
+            return Ok();
+        }
+
+        static string CursorRestore()
+        {
+            int x, y;
+            lock (cursorLock)
+            {
+                if (!hasCursor) return Ok();
+                x = lastX; y = lastY;
+            }
+            DpiAware();
+            Native.SetCursorPos(x, y);
+            return Ok();
+        }
+
         public static string Run(string[] p)
         {
             string cmd = p.Length > 1 ? p[1] : "";
@@ -467,6 +533,8 @@ namespace DockWin
                 case "monitors": return Monitors();
                 case "bright": return Brightness(p[2], p[3]);
                 case "media": return Media(p[2]);
+                case "cursortrack": return CursorTrack(p[2], p[3], p[4], p[5]);
+                case "cursorrestore": return CursorRestore();
                 default: return "{\"ok\":false,\"error\":\"Comando sconosciuto\"}";
             }
         }

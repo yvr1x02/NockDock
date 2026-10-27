@@ -64,13 +64,6 @@ export interface DisplayConfig {
   height: number
 }
 
-export interface TwitchConfig {
-  /** Client ID dell'app registrata su dev.twitch.tv (il Client Secret va nei Collegamenti) */
-  clientId: string
-  /** Nomi dei canali da controllare (es. "nomecanale") */
-  channels: string[]
-}
-
 export interface Snippet {
   label: string
   text: string
@@ -119,6 +112,8 @@ export interface DockConfig {
   theme: ThemeSetting
   /** Minuti senza tocchi prima della schermata di riposo con l'orologio (0 = mai) */
   idleMinutes: number
+  /** Dopo un tocco sul dock il puntatore torna dove era sugli altri monitor */
+  restoreCursor: boolean
   home: Record<HomeCard, boolean>
   projectActions: Record<ProjectAction, boolean>
   snippets: Snippet[]
@@ -129,7 +124,6 @@ export interface DockConfig {
     sleepFrom: number
     sleepTo: number
   }
-  twitch: TwitchConfig
   /** Cartella di Steam; vuota = trovata da sola */
   steamPath: string
   postazione: {
@@ -207,7 +201,7 @@ export interface MonitorBrightness {
 
 export type MediaCommand = 'playpause' | 'next' | 'prev'
 
-/** vercel.<id account> oppure twitch.clientSecret */
+/** vercel.<id account> */
 export type SecretKey = string
 
 /** Stato della sessione di Claude Code di un progetto, aggiornato dagli hook */
@@ -236,21 +230,6 @@ export interface VercelInfo {
 export interface SteamGame {
   appId: string
   name: string
-}
-
-export interface TwitchStream {
-  login: string
-  name: string
-  game: string
-  title: string
-  viewers: number
-  thumbnail: string
-}
-
-export interface TwitchInfo {
-  ok: boolean
-  error?: string
-  live: TwitchStream[]
 }
 
 export interface StreakInfo {
@@ -350,6 +329,8 @@ export interface DockApi {
   getMonitors(): Promise<{ ok: boolean; error?: string; monitors: MonitorBrightness[] }>
   setBrightness(id: string, value: number): Promise<ActionResult>
   media(cmd: MediaCommand): Promise<ActionResult>
+  /** Fine di un tocco sul dock: rimette il puntatore al suo posto */
+  touchEnd(): void
   openConfig(): Promise<ActionResult>
   getConfigPath(): Promise<string>
   getState(): Promise<DockState>
@@ -380,8 +361,6 @@ export interface DockApi {
   getVercel(projectId: string): Promise<VercelInfo>
   getSteamGames(): Promise<{ ok: boolean; error?: string; games: SteamGame[] }>
   launchGame(appId: string): Promise<ActionResult>
-  getTwitch(): Promise<TwitchInfo>
-  openTwitch(login: string): Promise<ActionResult>
   openUrl(url: string, mode: AccountMode): Promise<ActionResult>
   getStreak(): Promise<StreakInfo>
   /** state "end": la sessione è stata chiusa */

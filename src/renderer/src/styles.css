@@ -1,30 +1,30 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-ground: #0e1013;
-  --color-card: #15181d;
-  --color-raised: #1b1f25;
-  --color-line: #22262d;
-  --color-line-strong: #262a31;
-  --color-dash: #3a3f47;
+  --color-ground: #16191e;
+  --color-card: #1f2329;
+  --color-raised: #2a2f37;
+  --color-line: #363c46;
+  --color-line-strong: #4a515d;
+  --color-dash: #5a616d;
   --color-ink: #e8eaed;
   --color-soft: #c4c8ce;
   --color-muted: #9aa0a6;
-  --color-dim: #5f656e;
+  --color-dim: #737a85;
   --color-ok: #3dd68c;
   --color-warn: #f5c451;
   --color-err: #ffa24c;
-  --color-divider: #1f232a;
-  --color-panel: #14171c;
-  --color-panel-line: #2a2f37;
+  --color-divider: #2e333b;
+  --color-panel: #1d2127;
+  --color-panel-line: #444b56;
   --color-scrim: rgba(5, 6, 8, 0.74);
   --color-deep: #07080a;
   --color-tab: #8a9099;
   --color-warn-soft: #f5d27a;
-  --color-warn-bg: #221e14;
+  --color-warn-bg: #2c2618;
   --color-warn-line: #4a3f22;
   --color-ok-line: #1f4a35;
-  --color-thumb: #2c3139;
+  --color-thumb: #4a515d;
   --font-sans: 'Geist', 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif;
   --font-mono: 'Geist Mono', 'Cascadia Mono', Consolas, ui-monospace, monospace;
 }
@@ -73,29 +73,29 @@
 }
 
 [data-theme='dark'] {
-  --color-ground: #0e1013;
-  --color-card: #15181d;
-  --color-raised: #1b1f25;
-  --color-line: #22262d;
-  --color-line-strong: #262a31;
-  --color-dash: #3a3f47;
+  --color-ground: #16191e;
+  --color-card: #1f2329;
+  --color-raised: #2a2f37;
+  --color-line: #363c46;
+  --color-line-strong: #4a515d;
+  --color-dash: #5a616d;
   --color-ink: #e8eaed;
   --color-soft: #c4c8ce;
   --color-muted: #9aa0a6;
-  --color-dim: #5f656e;
+  --color-dim: #737a85;
   --color-ok: #3dd68c;
   --color-warn: #f5c451;
   --color-err: #ffa24c;
-  --color-divider: #1f232a;
-  --color-panel: #14171c;
-  --color-panel-line: #2a2f37;
+  --color-divider: #2e333b;
+  --color-panel: #1d2127;
+  --color-panel-line: #444b56;
   --color-scrim: rgba(5, 6, 8, 0.74);
   --color-tab: #8a9099;
   --color-warn-soft: #f5d27a;
-  --color-warn-bg: #221e14;
+  --color-warn-bg: #2c2618;
   --color-warn-line: #4a3f22;
   --color-ok-line: #1f4a35;
-  --color-thumb: #2c3139;
+  --color-thumb: #4a515d;
 }
 
 html,

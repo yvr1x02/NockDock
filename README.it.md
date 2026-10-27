@@ -26,7 +26,7 @@ Non hai uno schermo touch? Funziona anche in una normale finestra 1024×600.
 - **Claude Code**: con gli hook il dock (e Yuyu) sa quando Claude lavora, aspetta il tuo ok o ha finito.
 - **Account**: fino a 4 (es. Personale e Lavoro), ognuno con colore, profilo del browser (Brave, Chrome, Edge) e token Vercel. L'account si allinea da solo al progetto che apri.
 - **Postazione**: volume per app, volume generale, uscita audio, luminosità dei monitor (DDC/CI) e tasti multimediali.
-- **Scene**: i giochi Steam installati con le copertine e i tuoi canali Twitch quando sono in diretta.
+- **Scene**: i giochi Steam installati con le copertine.
 - **Recap di fine giornata**: i commit di oggi da tutti i repo e le note per domani.
 - **Serie di commit e livelli**, schermata di riposo con orologio grande, snippet da copiare, screenshot e blocca PC.
 - **Setup guidato** al primo avvio e **Impostazioni** complete dal dock: nessun file da modificare.
@@ -38,7 +38,7 @@ Non hai uno schermo touch? Funziona anche in una normale finestra 1024×600.
 - Windows 10 o 11
 - Facoltativo: un piccolo schermo touch (qualsiasi risoluzione: il layout 1024×600 si adatta)
 - Per i progetti: Git, VS Code con il comando `code`, Windows Terminal (già presente su Windows 11)
-- Facoltativi: Claude Code, Claude Desktop, Steam, un account Vercel, un'app Twitch
+- Facoltativi: Claude Code, Claude Desktop, Steam, un account Vercel
 
 ## Installazione
 
@@ -53,7 +53,7 @@ Al primo avvio il **setup guidato** chiede:
 3. **Progetti**: scegli la cartella dei repo; i progetti vengono trovati da soli, con comando del dev server, porta e progetto Vercel dedotti da ogni repo.
 4. **Aspetto e avvio**: tema, la mascotte Yuyu (facoltativa), schermata di riposo e avvio con Windows.
 
-Token, Twitch, Steam e hook di Claude Code si aggiungono dopo, in **Impostazioni → Collegamenti**.
+Token, Steam e hook di Claude Code si aggiungono dopo, in **Impostazioni → Collegamenti**.
 
 ## Compilare dal codice
 
@@ -75,7 +75,6 @@ I token sono cifrati con il tuo account di Windows (`safeStorage` di Electron) e
 
 - **Vercel**: un token per account (vercel.com → Account Settings → Tokens). Se i progetti di un account stanno in un team, aggiungi l'ID del team (`team_…`) in Impostazioni → Account.
 - **Claude Code**: in Impostazioni → Collegamenti tocca _Copia gli hook_ e incollali in `%USERPROFILE%\.claude\settings.json` (se il file ha già `"hooks"`, unisci le voci). Il dock ascolta solo su `127.0.0.1:47321`.
-- **Twitch**: registra un'app su dev.twitch.tv (categoria "Application Integration", redirect `http://localhost`), poi inserisci Client ID, Client Secret e canali.
 - **Steam**: le librerie vengono trovate da sole.
 
 ## La scheda Postazione

@@ -16,7 +16,6 @@ import { ClaudeBridge, hookSnippet } from './claude'
 import { Secrets } from './secrets'
 import { readVercel } from './vercel'
 import { findSteamGames } from './steam'
-import { readTwitch } from './twitch'
 import { readStreak } from './streak'
 import { Store } from './store'
 import { centeredBounds, fitZoom, pickDockDisplay } from './display'
@@ -54,10 +53,21 @@ function dockDisplay() {
   return pickDockDisplay(screen.getAllDisplays(), store.config.display, screen.getPrimaryDisplay().id)
 }
 
+/**
+ * L'aiutante di Windows segue il puntatore fuori dal dock, così dopo un tocco
+ * lo può rimettere dove era (Windows lo sposta sul punto toccato).
+ */
+function trackCursor(dock: Electron.Display | undefined): void {
+  if (!dock || process.platform !== 'win32' || !winHelper) return
+  const r = screen.dipToScreenRect(null, dock.bounds)
+  void winHelper.call('cursortrack', r.x, r.y, r.x + r.width, r.y + r.height)
+}
+
 function createWindow(): void {
   const dock = dockDisplay()
   onDock = !!dock
   dockId = dock?.id
+  trackCursor(dock)
   const size = { width: 1024, height: 600 }
   const bounds = dock ? dock.bounds : centeredBounds(screen.getPrimaryDisplay().workArea, size)
 
@@ -114,6 +124,7 @@ function onDisplaysChanged(): void {
     createWindow()
   } else if (dock) {
     win.setBounds(dock.bounds)
+    trackCursor(dock)
   }
 }
 
@@ -169,6 +180,11 @@ function registerIpc(): void {
     return r.canceled ? null : (r.filePaths[0] ?? null)
   })
 
+  ipcMain.on('touch:end', () => {
+    if (!onDock || !store.config.restoreCursor) return
+    // Un attimo di ritardo: il click del tocco deve arrivare prima che il puntatore se ne vada
+    setTimeout(() => void winHelper.call('cursorrestore'), 30)
+  })
   ipcMain.handle('audio:get', () => winHelper.call('audio'))
   ipcMain.handle('audio:app-volume', (_e, key: string, v: number) => winHelper.call('appvol', key, v))
   ipcMain.handle('audio:app-mute', (_e, key: string, m: boolean) => winHelper.call('appmute', key, m))
@@ -286,15 +302,6 @@ function registerIpc(): void {
     })
   )
 
-  ipcMain.handle('twitch:live', () =>
-    readTwitch(store.config.twitch.clientId, secrets.get('twitch.clientSecret'), store.config.twitch.channels)
-  )
-  ipcMain.handle('twitch:open', (_e, login: string) =>
-    guard(() => {
-      if (!/^\w+$/.test(login)) return { ok: false, error: tr('Canale non valido') }
-      return actions.openInBrowser(store.config, store.state.mode, `https://www.twitch.tv/${login}`)
-    })
-  )
   ipcMain.handle('url:open', (_e, url: string, mode: AccountMode) =>
     guard(() => {
       if (!/^https?:\/\//.test(url)) return { ok: false, error: tr('Link non valido') }

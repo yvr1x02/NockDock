@@ -32,7 +32,7 @@ function localizeFirstAccount(d: DockConfig, lang: Lang): DockConfig {
 
 /**
  * Setup guidato al primo avvio: schermo, browser e account, progetti, Yuyu.
- * Il resto (token, Twitch, Steam, snippet) si sistema dopo, dalle Impostazioni.
+ * Il resto (token, Steam, snippet) si sistema dopo, dalle Impostazioni.
  */
 export function Setup({ initial, onDone }: { initial: DockConfig; onDone: (cfg: DockConfig) => void }) {
   const [draft, setDraft] = useState<DockConfig>(() => localizeFirstAccount(initial, getLang()))
@@ -199,7 +199,7 @@ export function Setup({ initial, onDone }: { initial: DockConfig; onDone: (cfg: 
               </span>
               <span className="max-w-[560px] text-sm leading-relaxed text-muted">
                 {t(
-                  'Quando ti servono, in Impostazioni → Collegamenti trovi i token Vercel, Twitch, la cartella di Steam e gli hook per far seguire Claude Code a Yuyu.'
+                  'Quando ti servono, in Impostazioni → Collegamenti trovi i token Vercel, la cartella di Steam e gli hook per far seguire Claude Code a Yuyu.'
                 )}
               </span>
             </div>

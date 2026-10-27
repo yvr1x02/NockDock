@@ -75,7 +75,7 @@ export function Sistema() {
         <Tile
           icon="open"
           label={t('Collegamenti')}
-          sub={t('token Vercel, Twitch e Claude Code')}
+          sub={t('token Vercel e Claude Code')}
           wide
           onClick={() => openSettings('collegamenti')}
         />

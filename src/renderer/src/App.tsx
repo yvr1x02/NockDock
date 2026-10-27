@@ -88,6 +88,19 @@ export function App() {
     setDev((d) => ({ ...d, [id]: info }))
   }, [])
 
+  // Alla fine di ogni tocco il puntatore torna sul monitor dove stavi lavorando
+  useEffect(() => {
+    const end = (e: PointerEvent): void => {
+      if (e.pointerType === 'touch') api.touchEnd()
+    }
+    window.addEventListener('pointerup', end, true)
+    window.addEventListener('pointercancel', end, true)
+    return () => {
+      window.removeEventListener('pointerup', end, true)
+      window.removeEventListener('pointercancel', end, true)
+    }
+  }, [])
+
   // Primo caricamento e ricarica quando cambia config.json
   useEffect(() => {
     let alive = true

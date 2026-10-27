@@ -4,9 +4,8 @@ import { safeStorage } from 'electron'
 import type { SecretKey } from '@shared/types'
 import { tr } from './i18n'
 
-/** Chiavi ammesse: un token Vercel per account e il Client Secret di Twitch */
-export const isSecretKey = (k: string): k is SecretKey =>
-  /^(vercel\.[a-z0-9-]{1,40}|twitch\.clientSecret)$/.test(k)
+/** Chiavi ammesse: un token Vercel per account */
+export const isSecretKey = (k: string): k is SecretKey => /^vercel\.[a-z0-9-]{1,40}$/.test(k)
 
 /** Token salvati cifrati con l'account di Windows: non finiscono mai in config.json né nell'interfaccia. */
 export class Secrets {

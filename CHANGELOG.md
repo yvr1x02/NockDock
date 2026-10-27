@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- After a touch on the dock, the pointer goes back where it was on the other monitors (Settings → General → Touch).
+- Lighter dark theme: borders and buttons are visible on the dock screen.
+- Twitch removed from Scenes and Connections.
+- Install works with pnpm 11+ and Electron 45.
+
 ## 0.6.0
 
 - New name: Nockdock (data moves from `%APPDATA%\Dock` automatically).

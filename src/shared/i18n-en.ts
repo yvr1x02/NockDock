@@ -141,7 +141,6 @@ export const EN: Record<string, string> = {
   Schede: 'Tabs',
   'Home, Progetti e Sistema restano sempre. Le altre puoi nasconderle.':
     'Home, Projects and System are always there. You can hide the others.',
-  'Giochi di Steam e canali Twitch in diretta': 'Steam games and live Twitch channels',
   'Volume per app, uscita audio, luminosità dei monitor': 'Per-app volume, audio output, monitor brightness',
 
   // Impostazioni: schermo
@@ -245,14 +244,6 @@ export const EN: Record<string, string> = {
   'Token Vercel · {name}': 'Vercel token · {name}',
   'team {vercelTeamId}': 'team {vercelTeamId}',
   'progetti fuori da un team': 'projects outside a team',
-  Twitch: 'Twitch',
-  'Client ID': 'Client ID',
-  'dev.twitch.tv → Console → la tua app': 'dev.twitch.tv → Console → your app',
-  'Client Secret': 'Client Secret',
-  'Dalla stessa app su dev.twitch.tv': 'From the same app on dev.twitch.tv',
-  'Canali da seguire': 'Channels to follow',
-  'Nomi dei canali separati da virgola': 'Channel names, comma separated',
-  'canale1, canale2': 'channel1, channel2',
   Steam: 'Steam',
   'Cartella di Steam': 'Steam folder',
   'Vuota = la trovo da solo': 'Empty = found automatically',
@@ -315,8 +306,8 @@ export const EN: Record<string, string> = {
   'Tutto pronto': 'All set',
   'in finestra': 'in a window',
   'sul monitor del dock': 'on the dock monitor',
-  'Quando ti servono, in Impostazioni → Collegamenti trovi i token Vercel, Twitch, la cartella di Steam e gli hook per far seguire Claude Code a Yuyu.':
-    'When you need them, Settings → Connections has Vercel tokens, Twitch, the Steam folder and the hooks that let Yuyu follow Claude Code.',
+  'Quando ti servono, in Impostazioni → Collegamenti trovi i token Vercel, la cartella di Steam e gli hook per far seguire Claude Code a Yuyu.':
+    'When you need them, Settings → Connections has Vercel tokens, the Steam folder and the hooks that let Yuyu follow Claude Code.',
   Indietro: 'Back',
   'Puoi anche aggiungerli dopo': 'You can also add them later',
   'Salvo…': 'Saving…',
@@ -450,12 +441,6 @@ export const EN: Record<string, string> = {
   'Prossima versione: ogni gioco potrà avviare anche la sua scena (finestre, volumi, Non disturbare).':
     'Coming next: each game will be able to start its own scene (windows, volumes, Do not disturb).',
   'Avvia {name}': 'Launch {name}',
-  'In diretta su Twitch': 'Live on Twitch',
-  'Controllo i canali…': 'Checking channels…',
-  'Nessuno dei tuoi canali è in diretta. I canali si scelgono in Impostazioni → Collegamenti.':
-    'None of your channels is live. Pick channels in Settings → Connections.',
-  'Apro {name} nel browser': 'Opening {name} in the browser',
-  'LIVE ·': 'LIVE ·',
 
   // Progetti
   'link e QR': 'links and QR',
@@ -497,7 +482,7 @@ export const EN: Record<string, string> = {
   'Blocca PC': 'Lock PC',
   'PC bloccato': 'PC locked',
   'schermo, account, progetti, Yuyu': 'screen, accounts, projects, Yuyu',
-  'token Vercel, Twitch e Claude Code': 'Vercel tokens, Twitch and Claude Code',
+  'token Vercel e Claude Code': 'Vercel tokens and Claude Code',
 
   // Postazione
   'Monitor non disponibili': 'Monitors not available',
@@ -547,12 +532,8 @@ export const EN: Record<string, string> = {
   'Manca il token Vercel {p0}: Impostazioni → Collegamenti':
     'Missing Vercel token for {p0}: Settings → Connections',
   'Gioco non valido': 'Invalid game',
-  'Canale non valido': 'Invalid channel',
   'Link non valido': 'Invalid link',
-  'Client ID o Secret non validi': 'Invalid Client ID or Secret',
   'errore {status}': 'error {status}',
-  'Collega Twitch in Impostazioni → Collegamenti': 'Connect Twitch in Settings → Connections',
-  'Twitch: errore {status}': 'Twitch: error {status}',
   'Chiave non valida': 'Invalid key',
   'L’aiutante di Windows non risponde': 'The Windows helper isn’t responding',
   'Risposta non valida': 'Invalid response',
@@ -561,5 +542,9 @@ export const EN: Record<string, string> = {
   'token non valido o senza accesso': 'invalid token or no access',
   'Vercel non raggiungibile: {message}': 'Vercel unreachable: {message}',
   'Steam non trovato: indica la cartella in Impostazioni → Collegamenti':
-    'Steam not found: set its folder in Settings → Connections'
+    'Steam not found: set its folder in Settings → Connections',
+  Touch: 'Touch',
+  'Rimetti il puntatore dove era dopo un tocco': 'Put the pointer back after a touch',
+  'Windows sposta il mouse sul dock a ogni tocco: così torna sul monitor dove stavi lavorando':
+    'Windows moves the mouse to the dock on every touch: this sends it back to the monitor you were working on'
 }

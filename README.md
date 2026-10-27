@@ -26,7 +26,7 @@ No touch screen? It runs just as well in a normal 1024×600 window.
 - **Claude Code**: through hooks, the dock (and Yuyu) knows when Claude is working, waiting for you or done.
 - **Accounts**: up to 4 (e.g. Personal and Work), each with its own colour, browser profile (Brave, Chrome, Edge) and Vercel token. The dock switches account when you open a project.
 - **Desk**: per-app volume, master volume, audio output switching, monitor brightness (DDC/CI) and media keys.
-- **Scenes**: installed Steam games with covers and your Twitch channels when they are live.
+- **Scenes**: installed Steam games with covers.
 - **End-of-day recap**: today's commits across all repos and notes for tomorrow.
 - **Commit streak and levels**, idle screen with a big clock, snippets to copy, screenshot and lock PC.
 - **Guided setup** on first launch and full **Settings** on the dock itself: no config files to edit.
@@ -47,7 +47,7 @@ No touch screen? It runs just as well in a normal 1024×600 window.
 - Windows 10 or 11
 - Optional: a small touch screen (any resolution: the 1024×600 layout scales to fit)
 - For the project features: Git, VS Code with the `code` command, Windows Terminal (built into Windows 11)
-- Optional: Claude Code, Claude Desktop, Steam, a Vercel account, a Twitch app
+- Optional: Claude Code, Claude Desktop, Steam, a Vercel account
 
 ## Install
 
@@ -62,7 +62,7 @@ On first launch the **guided setup** asks for:
 3. **Projects**: pick the folder with your repos; projects are found automatically, with dev server command, port and Vercel project worked out from each repo.
 4. **Look and startup**: theme, the Yuyu mascot (optional), idle screen and start with Windows.
 
-Tokens, Twitch, Steam and Claude Code hooks can be added later in **Settings → Connections**.
+Tokens, Steam and Claude Code hooks can be added later in **Settings → Connections**.
 
 <p align="center">
   <img src="docs/screenshots/setup-welcome.png" width="360" alt="Guided setup" />
@@ -89,7 +89,6 @@ Tokens are encrypted with your Windows account (Electron `safeStorage`) and stor
 
 - **Vercel**: one token per account (vercel.com → Account Settings → Tokens). If an account's projects live in a team, add the team ID (`team_…`) in Settings → Accounts.
 - **Claude Code**: in Settings → Connections tap _Copy the hooks_ and paste them into `%USERPROFILE%\.claude\settings.json` (merge with any existing `"hooks"`). The dock only listens on `127.0.0.1:47321`.
-- **Twitch**: register an app on dev.twitch.tv (category "Application Integration", redirect `http://localhost`), then add Client ID, Client Secret and channels.
 - **Steam**: libraries are found automatically.
 
 ## The Desk tab

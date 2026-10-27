@@ -27,6 +27,7 @@ export const DEFAULT_CONFIG: DockConfig = {
   browser: { kind: 'default', path: '' },
   display: { mode: 'auto', width: 1024, height: 600 },
   openAtLogin: true,
+  restoreCursor: true,
   tabs: { scene: true, postazione: true },
   tabOrder: [...TAB_IDS],
   theme: 'dark',
@@ -42,7 +43,6 @@ export const DEFAULT_CONFIG: DockConfig = {
     claude: true
   },
   buddy: { enabled: true, sleepFrom: 23, sleepTo: 7 },
-  twitch: { clientId: '', channels: [] },
   steamPath: '',
   postazione: { hiddenApps: [] },
   snippets: []
@@ -174,6 +174,7 @@ export function normalizeConfig(raw: unknown): DockConfig {
     browser,
     display,
     openAtLogin: c.openAtLogin ?? DEFAULT_CONFIG.openAtLogin,
+    restoreCursor: c.restoreCursor ?? DEFAULT_CONFIG.restoreCursor,
     tabs: { ...DEFAULT_CONFIG.tabs, ...(c.tabs ?? {}) },
     tabOrder,
     theme: c.theme === 'light' || c.theme === 'auto' ? c.theme : 'dark',
@@ -182,11 +183,6 @@ export function normalizeConfig(raw: unknown): DockConfig {
     projectActions: bools(PROJECT_ACTIONS, c.projectActions),
     snippets: Array.isArray(c.snippets) ? c.snippets.filter((s) => s && s.label) : [],
     buddy,
-    twitch: {
-      ...DEFAULT_CONFIG.twitch,
-      ...(c.twitch ?? {}),
-      channels: Array.isArray(c.twitch?.channels) ? c.twitch.channels : []
-    },
     steamPath: c.steamPath ?? '',
     postazione: {
       hiddenApps: Array.isArray(c.postazione?.hiddenApps) ? c.postazione.hiddenApps : []

@@ -90,6 +90,16 @@ export function GeneralSection({ draft, patch }: SectionProps) {
           sub={t('Vale per l’app installata; durante lo sviluppo non si registra')}
         />
       </Group>
+      <Group title={t('Touch')}>
+        <Toggle
+          checked={draft.restoreCursor}
+          onChange={(v) => patch((d) => ({ ...d, restoreCursor: v }))}
+          label={t('Rimetti il puntatore dove era dopo un tocco')}
+          sub={t(
+            'Windows sposta il mouse sul dock a ogni tocco: così torna sul monitor dove stavi lavorando'
+          )}
+        />
+      </Group>
     </div>
   )
 }
@@ -1029,7 +1039,6 @@ function SecretRow({
 export function LinksSection({ draft, patch, say }: SectionProps) {
   const [status, setStatus] = useState<Record<SecretKey, boolean>>({})
   const [snippet, setSnippet] = useState('')
-  const [channels, setChannels] = useState(draft.twitch.channels.join(', '))
   useEffect(() => {
     api.secretsStatus().then(setStatus)
     api.claudeHookSnippet().then(setSnippet)
@@ -1060,36 +1069,6 @@ export function LinksSection({ draft, patch, say }: SectionProps) {
               onSaved={onSaved}
             />
           ))}
-        </Group>
-        <Group title={t('Twitch')}>
-          <Field label={t('Client ID')} hint={t('dev.twitch.tv → Console → la tua app')}>
-            <TextInput
-              mono
-              value={draft.twitch.clientId}
-              onChange={(v) => patch((d) => ({ ...d, twitch: { ...d.twitch, clientId: v.trim() } }))}
-            />
-          </Field>
-          <SecretRow
-            k="twitch.clientSecret"
-            label={t('Client Secret')}
-            hint={t('Dalla stessa app su dev.twitch.tv')}
-            status={!!status['twitch.clientSecret']}
-            onSaved={onSaved}
-          />
-          <Field label={t('Canali da seguire')} hint={t('Nomi dei canali separati da virgola')}>
-            <TextInput
-              value={channels}
-              onChange={(v) => {
-                setChannels(v)
-                const list = v
-                  .split(/[,\s]+/)
-                  .map((c) => c.trim().toLowerCase())
-                  .filter((c) => /^\w+$/.test(c))
-                patch((d) => ({ ...d, twitch: { ...d.twitch, channels: list } }))
-              }}
-              placeholder={t('canale1, canale2')}
-            />
-          </Field>
         </Group>
         <Group title={t('Steam')}>
           <Field label={t('Cartella di Steam')} hint={t('Vuota = la trovo da solo')}>
