@@ -11,7 +11,6 @@ export const EN: Record<string, string> = {
   Chiudi: 'Close',
   Home: 'Home',
   Progetti: 'Projects',
-  Scene: 'Scenes',
   Postazione: 'Desk',
   Sistema: 'System',
   'Configurazione ricaricata': 'Settings reloaded',
@@ -343,8 +342,8 @@ export const EN: Record<string, string> = {
     'A pixel-art character that walks along the top bar and reacts to what you do',
   'Dopo quanto tempo senza tocchi compare l’orologio grande (con Yuyu, se è acceso).':
     'How long without touches before the big clock appears (with Yuyu, if he’s on).',
-  'Scegli l’ordine. Home, Progetti e Sistema restano sempre; Scene e Postazione puoi nasconderle.':
-    'Choose the order. Home, Projects and System always stay; you can hide Scenes and Desk.',
+  'Scegli l’ordine. Home, Progetti e Sistema restano sempre; Giochi e Postazione puoi nasconderle.':
+    'Choose the order. Home, Projects and System always stay; you can hide Games and Desk.',
   Nascondi: 'Hide',
   Mostra: 'Show',
   'Sposta su {name}': 'Move {name} up',

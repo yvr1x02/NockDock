@@ -26,7 +26,7 @@ No touch screen? It runs just as well in a normal 1024×600 window.
 - **Claude Code**: through hooks, the dock (and Yuyu) knows when Claude is working, waiting for you or done.
 - **Accounts**: up to 4 (e.g. Personal and Work), each with its own colour, browser profile (Brave, Chrome, Edge) and Vercel token. The dock switches account when you open a project.
 - **Desk**: per-app volume, master volume, audio output switching, monitor brightness (DDC/CI) and media keys.
-- **Scenes**: installed Steam games with covers.
+- **Games**: installed Steam games with covers.
 - **End-of-day recap**: today's commits across all repos and notes for tomorrow.
 - **Commit streak and levels**, idle screen with a big clock, snippets to copy, screenshot and lock PC.
 - **Guided setup** on first launch and full **Settings** on the dock itself: no config files to edit.

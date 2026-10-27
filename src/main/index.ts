@@ -82,7 +82,7 @@ function createWindow(): void {
     alwaysOnTop: !!dock,
     skipTaskbar: !!dock,
     focusable: !dock,
-    backgroundColor: '#0E1013',
+    backgroundColor: '#21252B',
     title: 'Nockdock',
     icon: app.isPackaged ? undefined : join(__dirname, '../../build/icon.png'),
     autoHideMenuBar: true,

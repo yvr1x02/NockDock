@@ -109,7 +109,7 @@ export function GeneralSection({ draft, patch }: SectionProps) {
 const TAB_LABEL: Record<TabId, string> = {
   home: 'Home',
   progetti: 'Progetti',
-  scene: 'Scene',
+  scene: 'Giochi',
   postazione: 'Postazione',
   sistema: 'Sistema'
 }
@@ -188,7 +188,7 @@ export function AppearanceSection({ draft, patch }: SectionProps) {
       <Group title={t('Schede')}>
         <p className="m-0 text-[13px] text-muted">
           {t(
-            'Scegli l’ordine. Home, Progetti e Sistema restano sempre; Scene e Postazione puoi nasconderle.'
+            'Scegli l’ordine. Home, Progetti e Sistema restano sempre; Giochi e Postazione puoi nasconderle.'
           )}
         </p>
         <div className="flex flex-col gap-1.5">

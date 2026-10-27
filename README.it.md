@@ -26,7 +26,7 @@ Non hai uno schermo touch? Funziona anche in una normale finestra 1024×600.
 - **Claude Code**: con gli hook il dock (e Yuyu) sa quando Claude lavora, aspetta il tuo ok o ha finito.
 - **Account**: fino a 4 (es. Personale e Lavoro), ognuno con colore, profilo del browser (Brave, Chrome, Edge) e token Vercel. L'account si allinea da solo al progetto che apri.
 - **Postazione**: volume per app, volume generale, uscita audio, luminosità dei monitor (DDC/CI) e tasti multimediali.
-- **Scene**: i giochi Steam installati con le copertine.
+- **Giochi**: i giochi Steam installati con le copertine.
 - **Recap di fine giornata**: i commit di oggi da tutti i repo e le note per domani.
 - **Serie di commit e livelli**, schermata di riposo con orologio grande, snippet da copiare, screenshot e blocca PC.
 - **Setup guidato** al primo avvio e **Impostazioni** complete dal dock: nessun file da modificare.

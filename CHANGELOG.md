@@ -3,8 +3,8 @@
 ## Unreleased
 
 - After a touch on the dock, the pointer goes back where it was on the other monitors (Settings → General → Touch).
-- Lighter dark theme: borders and buttons are visible on the dock screen.
-- Twitch removed from Scenes and Connections.
+- Lighter dark theme: background, cards and borders are easier to see on the dock screen.
+- Twitch removed; the Scenes tab is now Games, with a gamepad icon.
 - Install works with pnpm 11+ and Electron 45.
 
 ## 0.6.0

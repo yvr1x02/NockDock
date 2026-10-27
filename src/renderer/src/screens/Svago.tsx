@@ -4,7 +4,7 @@ import { api, useDock } from '../lib/dock'
 import { Card } from '../components/ui'
 import { t } from '../lib/i18n'
 
-/** Scheda Scene: per ora i giochi Steam; le scene di finestre arrivano dopo. */
+/** Scheda Giochi: i giochi Steam installati. */
 export function Svago() {
   return (
     <div className="flex h-full flex-col">

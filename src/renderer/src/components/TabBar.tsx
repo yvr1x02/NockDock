@@ -5,7 +5,7 @@ import { t } from '../lib/i18n'
 const TABS: { id: Tab; label: string; icon: IconName }[] = [
   { id: 'home', label: 'Home', icon: 'home' },
   { id: 'progetti', label: 'Progetti', icon: 'folder' },
-  { id: 'scene', label: 'Scene', icon: 'scene' },
+  { id: 'scene', label: 'Giochi', icon: 'scene' },
   { id: 'postazione', label: 'Postazione', icon: 'sliders' },
   { id: 'sistema', label: 'Sistema', icon: 'chip' }
 ]
