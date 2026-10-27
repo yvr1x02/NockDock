@@ -199,7 +199,7 @@ export function Setup({ initial, onDone }: { initial: DockConfig; onDone: (cfg: 
               </span>
               <span className="max-w-[560px] text-sm leading-relaxed text-muted">
                 {t(
-                  'Quando ti servono, in Impostazioni → Collegamenti trovi i token Vercel, la cartella di Steam e gli hook per far seguire Claude Code a Yuyu.'
+                  'Quando ti servono, in Impostazioni → Collegamenti trovi i token Vercel, la cartella di Steam e il collegamento con Claude Code.'
                 )}
               </span>
             </div>

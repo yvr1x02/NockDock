@@ -39,6 +39,7 @@ export function VercelPanel() {
 
   if (!p) return null
   const latest = v?.latest
+  const production = v?.production
 
   return (
     <Panel title={t('Vercel · {name}', { name: p.name })} onClose={() => openPanel(null)}>
@@ -58,13 +59,6 @@ export function VercelPanel() {
           )}
         </span>
         <div className="flex min-w-0 flex-1 flex-col gap-4">
-          {!p.vercelProject && (
-            <p className="m-0 rounded-xl bg-raised p-3 text-sm leading-relaxed text-soft">
-              {t(
-                "Per vedere i deploy scegli il progetto Vercel in Impostazioni → Progetti e aggiungi il token Vercel dell'account in Impostazioni → Collegamenti."
-              )}
-            </p>
-          )}
           {v && !v.ok && <p className="m-0 text-sm text-err">{v.error}</p>}
           {latest && (
             <div className="flex flex-col gap-1 rounded-xl bg-raised px-4 py-3">
@@ -83,6 +77,15 @@ export function VercelPanel() {
             {t("Fai inquadrare il QR al cliente: apre l'ultima preview pronta.")}
           </span>
           <div className="mt-1 flex flex-wrap gap-2.5">
+            {production && (
+              <button
+                type="button"
+                onClick={() => run(api.openUrl(production.url, p.account), t('Sito aperto nel browser'))}
+                className="h-12 rounded-xl bg-accent px-4 text-sm font-bold text-on-accent"
+              >
+                {t('Apri il sito')}
+              </button>
+            )}
             <button
               type="button"
               disabled={!preview}

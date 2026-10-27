@@ -846,7 +846,7 @@ export function ProjectsSection(props: SectionProps) {
           </div>
           <Field
             label={t('Progetto Vercel')}
-            hint={t('Nome o ID (prj_…): serve per i deploy e il QR della preview')}
+            hint={t('Vuoto = lo trovo dal repo GitHub collegato a Vercel. Altrimenti nome o ID (prj_…)')}
           >
             <TextInput
               mono
@@ -1038,11 +1038,16 @@ function SecretRow({
 
 export function LinksSection({ draft, patch, say }: SectionProps) {
   const [status, setStatus] = useState<Record<SecretKey, boolean>>({})
-  const [snippet, setSnippet] = useState('')
+  const [hooks, setHooks] = useState<boolean | null>(null)
   useEffect(() => {
     api.secretsStatus().then(setStatus)
-    api.claudeHookSnippet().then(setSnippet)
+    api.claudeHooks().then(setHooks)
   }, [])
+  const toggleHooks = async (on: boolean): Promise<void> => {
+    const r = await api.setClaudeHooks(on)
+    if (r.ok) setHooks(on)
+    say(r.ok ? (on ? t('Claude Code collegato') : t('Claude Code scollegato')) : r.error, !r.ok)
+  }
   const onSaved = (s: Record<SecretKey, boolean>, removed: boolean): void => {
     setStatus(s)
     say(removed ? t('Token rimosso') : t('Salvato, cifrato con il tuo account di Windows'))
@@ -1085,24 +1090,24 @@ export function LinksSection({ draft, patch, say }: SectionProps) {
       <Group title={t('Claude Code')}>
         <p className="m-0 text-sm leading-relaxed text-soft">
           {t(
-            'Per far sapere al dock (e a Yuyu) quando Claude lavora, aspetta o ha finito, aggiungi questi hook al file'
-          )}{' '}
-          <span className="font-mono">{t('%USERPROFILE%\\.claude\\settings.json')}</span>
-          {t('. Se il file ha già una voce')} <span className="font-mono">{t('"hooks"')}</span>
-          {t(', unisci le voci.')}
+            'Collegalo per far sapere al dock (e a Yuyu) quando Claude lavora, aspetta te o ha finito. Nockdock aggiunge i suoi hook alle impostazioni di Claude Code e lascia il resto com’è.'
+          )}
         </p>
-        <pre className="m-0 max-h-[300px] overflow-auto rounded-xl bg-raised p-3 font-mono text-[11px] leading-snug text-soft">
-          {snippet}
-        </pre>
-        <SmallButton
-          primary
-          onClick={async () => {
-            const r = await api.copyText(snippet)
-            say(r.ok ? t('Hook copiati negli appunti') : r.error, !r.ok)
-          }}
-        >
-          {t('Copia gli hook')}
-        </SmallButton>
+        <span className={`text-sm font-semibold ${hooks ? 'text-ok' : 'text-muted'}`}>
+          {hooks === null ? '…' : hooks ? t('Collegato') : t('Non collegato')}
+        </span>
+        <div className="flex gap-2">
+          {hooks ? (
+            <SmallButton onClick={() => void toggleHooks(false)}>{t('Scollega')}</SmallButton>
+          ) : (
+            <SmallButton primary onClick={() => void toggleHooks(true)}>
+              {t('Collega Claude Code')}
+            </SmallButton>
+          )}
+        </div>
+        <span className="text-xs text-muted">
+          {t('Vale per le sessioni di Claude Code aperte dopo il collegamento.')}
+        </span>
       </Group>
     </div>
   )

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { ProjectConfig } from '@shared/types'
-import { hookSnippet, projectForCwd, stateForEvent } from './claude'
+import { hasDockHooks, projectForCwd, stateForEvent, withDockHooks } from './claude'
 import { levelFor, streakFrom } from './streak'
 import { parseAppManifest, parseLibraryFolders } from './steam'
 import { toDeploy } from './vercel'
@@ -29,13 +29,36 @@ describe('Claude Code', () => {
     expect(stateForEvent('PreCompact')).toBeUndefined()
   })
 
-  it('genera gli hook con il percorso dello script', () => {
-    const j = JSON.parse(hookSnippet('C:\\Users\\user\\AppData\\Roaming\\Dock\\dock-hook.cjs'))
-    expect(Object.keys(j.hooks)).toEqual(['UserPromptSubmit', 'Notification', 'Stop', 'SessionEnd'])
-    expect(j.hooks.Stop[0].hooks[0]).toEqual({
+  const script = 'C:\\Users\\user\\AppData\\Roaming\\Nockdock\\dock-hook.cjs'
+
+  it('aggiunge gli hook senza toccare il resto', () => {
+    const before = {
+      model: 'opus',
+      hooks: { Stop: [{ hooks: [{ type: 'command', command: 'say done' }] }] }
+    }
+    const after = withDockHooks(before, script, true)
+    expect(after.model).toBe('opus')
+    expect(Object.keys(after.hooks!)).toEqual(['Stop', 'UserPromptSubmit', 'Notification', 'SessionEnd'])
+    expect(after.hooks!.Stop).toHaveLength(2)
+    expect(after.hooks!.Stop[0].hooks![0].command).toBe('say done')
+    expect(after.hooks!.Stop[1].hooks![0]).toEqual({
       type: 'command',
-      command: 'node "C:/Users/user/AppData/Roaming/Dock/dock-hook.cjs"'
+      command: 'node "C:/Users/user/AppData/Roaming/Nockdock/dock-hook.cjs"'
     })
+    expect(hasDockHooks(after)).toBe(true)
+  })
+
+  it('non duplica gli hook e li toglie tutti', () => {
+    const twice = withDockHooks(withDockHooks({}, script, true), script, true)
+    expect(twice.hooks!.Stop).toHaveLength(1)
+    const off = withDockHooks(
+      { ...twice, hooks: { ...twice.hooks, Stop: [...twice.hooks!.Stop, { hooks: [{ command: 'x' }] }] } },
+      script,
+      false
+    )
+    expect(off.hooks).toEqual({ Stop: [{ hooks: [{ command: 'x' }] }] })
+    expect(hasDockHooks(off)).toBe(false)
+    expect(withDockHooks(twice, script, false).hooks).toBeUndefined()
   })
 })
 

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Claude Code: one button in Settings → Connections adds or removes the hooks; no paths to copy by hand.
+- Vercel: the project is found from the GitHub repo and the right team is found automatically; new “Open the site” button; the dashboard link works without typing it.
 - Music: the play/pause button follows what Windows is playing, with the track title.
 - After a touch on the dock, the pointer goes back where it was on the other monitors (Settings → General → Touch).
 - Lighter dark theme: background, cards and borders are easier to see on the dock screen.

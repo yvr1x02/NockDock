@@ -232,7 +232,11 @@ export interface VercelDeploy {
 export interface VercelInfo {
   ok: boolean
   error?: string
+  /** Pagina del progetto sulla dashboard di Vercel */
+  dashboardUrl?: string
   latest?: VercelDeploy
+  /** Ultima produzione pronta: il sito pubblicato */
+  production?: VercelDeploy
   latestPreview?: VercelDeploy
 }
 
@@ -367,7 +371,9 @@ export interface DockApi {
   secretsStatus(): Promise<Record<SecretKey, boolean>>
   setSecret(key: SecretKey, value: string): Promise<Record<SecretKey, boolean>>
   claudeStatus(): Promise<Record<string, ClaudeEvent>>
-  claudeHookSnippet(): Promise<string>
+  /** Gli hook di Nockdock sono nelle impostazioni di Claude Code? */
+  claudeHooks(): Promise<boolean>
+  setClaudeHooks(on: boolean): Promise<ActionResult>
   getVercel(projectId: string): Promise<VercelInfo>
   getSteamGames(): Promise<{ ok: boolean; error?: string; games: SteamGame[] }>
   launchGame(appId: string): Promise<ActionResult>

@@ -12,9 +12,9 @@ import type {
   RecapProject,
   SecretKey
 } from '@shared/types'
-import { ClaudeBridge, hookSnippet } from './claude'
+import { ClaudeBridge, claudeHooksStatus, setClaudeHooks } from './claude'
 import { Secrets } from './secrets'
-import { readVercel } from './vercel'
+import { knownDashboard, readVercel } from './vercel'
 import { findSteamGames } from './steam'
 import { readStreak } from './streak'
 import { Store } from './store'
@@ -245,7 +245,9 @@ function registerIpc(): void {
       const p = projectOr(id)
       let url: string | undefined
       if (kind === 'github') url = (await readGitInfo(p.path, 1)).remoteUrl
-      if (kind === 'vercel') url = p.vercelUrl
+      if (kind === 'vercel') {
+        url = p.vercelUrl ?? knownDashboard(p.vercelProject, (await readGitInfo(p.path, 1)).remoteUrl)
+      }
       if (kind === 'supabase') url = p.supabaseUrl
       if (kind === 'localhost') url = devServers.status(p).localUrl
       if (!url)
@@ -277,11 +279,14 @@ function registerIpc(): void {
   })
 
   ipcMain.handle('claude:status', () => claude.status())
-  ipcMain.handle('claude:snippet', () => hookSnippet(claude.scriptPath))
+  ipcMain.handle('claude:hooks', () => claudeHooksStatus())
+  ipcMain.handle('claude:set-hooks', (_e, on: boolean) => {
+    const r = setClaudeHooks(claude.scriptPath, !!on)
+    return r.error ? { ...r, error: tr(r.error) } : r
+  })
 
   ipcMain.handle('vercel:info', async (_e, id: string) => {
     const p = projectOr(id)
-    if (!p.vercelProject) return { ok: false, error: tr('Aggiungi il progetto Vercel nelle Impostazioni') }
     const account = store.config.accounts.find((a) => a.id === p.account)
     const token = secrets.get(`vercel.${p.account}`)
     if (!token)
@@ -291,7 +296,8 @@ function registerIpc(): void {
           p0: account?.name ?? p.account
         })
       }
-    return readVercel(token, p.vercelProject, account?.vercelTeamId)
+    const repoUrl = (await readGitInfo(p.path, 1)).remoteUrl
+    return readVercel(token, p.vercelProject, repoUrl, account?.vercelTeamId)
   })
 
   ipcMain.handle('steam:games', () => findSteamGames(store.config.steamPath))

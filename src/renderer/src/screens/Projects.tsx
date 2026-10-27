@@ -45,11 +45,9 @@ export function Projects() {
     )
   const cState = claude[sel.id]?.state
   const v = vercel[sel.id]
-  const vercelSub = !sel.vercelProject
-    ? t('link e QR')
-    : v?.latest
-      ? `${v.latest.state === 'READY' ? t('ok') : v.latest.state === 'ERROR' ? t('errore') : t('in corso')} · ${ago(v.latest.createdAt)}`
-      : t('deploy e QR')
+  const vercelSub = v?.latest
+    ? `${v.latest.state === 'READY' ? t('ok') : v.latest.state === 'ERROR' ? t('errore') : t('in corso')} · ${ago(v.latest.createdAt)}`
+    : t('deploy e QR')
 
   // Pulsanti scelti nelle impostazioni, poi i link del progetto fino a riempire la griglia (8 posti)
   const acts = config.projectActions

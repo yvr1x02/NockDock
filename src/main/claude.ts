@@ -1,6 +1,7 @@
 import { createServer, type Server } from 'node:http'
-import { writeFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { homedir } from 'node:os'
+import { dirname, join } from 'node:path'
 import type { ClaudeEvent, ClaudeState, ProjectConfig } from '@shared/types'
 
 export const CLAUDE_PORT = 47321
@@ -37,7 +38,7 @@ export function stateForEvent(event: string): ClaudeState | 'end' | undefined {
 }
 
 /** Script che gli hook di Claude Code eseguono: inoltra al dock il JSON ricevuto su stdin. */
-const HOOK_SCRIPT = `// Generato dal Dock: inoltra gli eventi di Claude Code all'app.
+const HOOK_SCRIPT = `// Generato da Nockdock: inoltra gli eventi di Claude Code all'app.
 const http = require('node:http')
 let data = ''
 process.stdin.on('data', (c) => (data += c))
@@ -54,10 +55,75 @@ process.stdin.on('end', () => {
 
 export const HOOK_EVENTS = ['UserPromptSubmit', 'Notification', 'Stop', 'SessionEnd'] as const
 
-export function hookSnippet(scriptPath: string): string {
+const HOOK_FILE = 'dock-hook.cjs'
+
+type HookGroup = { matcher?: string; hooks?: { type?: string; command?: string }[] }
+type ClaudeSettings = { hooks?: Record<string, HookGroup[]>; [k: string]: unknown }
+
+const isOurs = (g: HookGroup): boolean => !!g.hooks?.some((h) => h.command?.includes(HOOK_FILE))
+
+/**
+ * Aggiunge (on) o toglie (off) gli hook di Nockdock dalle impostazioni di Claude Code,
+ * lasciando com'è tutto il resto del file.
+ */
+export function withDockHooks(settings: ClaudeSettings, scriptPath: string, on: boolean): ClaudeSettings {
   const command = `node "${scriptPath.replace(/\\/g, '/')}"`
-  const hooks = Object.fromEntries(HOOK_EVENTS.map((e) => [e, [{ hooks: [{ type: 'command', command }] }]]))
-  return JSON.stringify({ hooks }, null, 2)
+  const hooks: Record<string, HookGroup[]> = { ...(settings.hooks ?? {}) }
+  for (const event of HOOK_EVENTS) {
+    const others = (hooks[event] ?? []).filter((g) => !isOurs(g))
+    const next = on ? [...others, { hooks: [{ type: 'command', command }] }] : others
+    if (next.length) hooks[event] = next
+    else delete hooks[event]
+  }
+  const out: ClaudeSettings = { ...settings, hooks }
+  if (!Object.keys(hooks).length) delete out.hooks
+  return out
+}
+
+export const hasDockHooks = (settings: ClaudeSettings): boolean =>
+  HOOK_EVENTS.every((e) => (settings.hooks?.[e] ?? []).some(isOurs))
+
+/** ~/.claude/settings.json */
+export const claudeSettingsPath = (): string => join(homedir(), '.claude', 'settings.json')
+
+function readSettings(file: string): ClaudeSettings {
+  if (!existsSync(file)) return {}
+  const raw = readFileSync(file, 'utf8').trim()
+  if (!raw) return {}
+  const j = JSON.parse(raw)
+  if (!j || typeof j !== 'object' || Array.isArray(j)) throw new Error('settings.json')
+  return j as ClaudeSettings
+}
+
+export function claudeHooksStatus(): boolean {
+  try {
+    return hasDockHooks(readSettings(claudeSettingsPath()))
+  } catch {
+    return false
+  }
+}
+
+/** Scrive gli hook nel file di Claude Code; la prima volta ne tiene una copia accanto. */
+export function setClaudeHooks(scriptPath: string, on: boolean): { ok: boolean; error?: string } {
+  const file = claudeSettingsPath()
+  let current: ClaudeSettings
+  try {
+    current = readSettings(file)
+  } catch {
+    return {
+      ok: false,
+      error: 'Le impostazioni di Claude Code non sono un JSON valido: correggile e riprova'
+    }
+  }
+  try {
+    mkdirSync(dirname(file), { recursive: true })
+    const backup = file + '.nockdock-backup'
+    if (existsSync(file) && !existsSync(backup)) copyFileSync(file, backup)
+    writeFileSync(file, JSON.stringify(withDockHooks(current, scriptPath, on), null, 2) + '\n', 'utf8')
+    return { ok: true }
+  } catch (e) {
+    return { ok: false, error: (e as Error).message }
+  }
 }
 
 export class ClaudeBridge {

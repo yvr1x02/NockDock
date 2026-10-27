@@ -68,8 +68,6 @@ export const EN: Record<string, string> = {
   Annullato: 'Cancelled',
   'QR code della preview {url}': 'QR code for preview {url}',
   'Nessuna preview pronta': 'No preview ready',
-  "Per vedere i deploy scegli il progetto Vercel in Impostazioni → Progetti e aggiungi il token Vercel dell'account in Impostazioni → Collegamenti.":
-    'To see deploys, pick the Vercel project in Settings → Projects and add the account’s Vercel token in Settings → Connections.',
   'Ultimo deploy': 'Latest deploy',
   'La preview compare qui quando è pronta': 'The preview shows up here when it’s ready',
   "Fai inquadrare il QR al cliente: apre l'ultima preview pronta.":
@@ -217,8 +215,6 @@ export const EN: Record<string, string> = {
     'Listening on the network for the phone QR: Next “-H 0.0.0.0”, Vite “--host”',
   Porta: 'Port',
   'Progetto Vercel': 'Vercel project',
-  'Nome o ID (prj_…): serve per i deploy e il QR della preview':
-    'Name or ID (prj_…): used for deploys and the preview QR',
   'nome-progetto': 'project-name',
   'Link dashboard Vercel': 'Vercel dashboard link',
   'Link dashboard Supabase': 'Supabase dashboard link',
@@ -247,12 +243,18 @@ export const EN: Record<string, string> = {
   'Cartella di Steam': 'Steam folder',
   'Vuota = la trovo da solo': 'Empty = found automatically',
   'Claude Code': 'Claude Code',
-  'Per far sapere al dock (e a Yuyu) quando Claude lavora, aspetta o ha finito, aggiungi questi hook al file':
-    'To let the dock (and Yuyu) know when Claude is working, waiting or done, add these hooks to',
-  '. Se il file ha già una voce': '. If the file already has a',
-  ', unisci le voci.': ' entry, merge them.',
-  'Hook copiati negli appunti': 'Hooks copied to the clipboard',
-  'Copia gli hook': 'Copy the hooks',
+  'Collegalo per far sapere al dock (e a Yuyu) quando Claude lavora, aspetta te o ha finito. Nockdock aggiunge i suoi hook alle impostazioni di Claude Code e lascia il resto com’è.':
+    'Connect it so the dock (and Yuyu) know when Claude is working, waiting for you or done. Nockdock adds its hooks to the Claude Code settings and leaves everything else as it is.',
+  Collegato: 'Connected',
+  'Non collegato': 'Not connected',
+  Scollega: 'Disconnect',
+  'Collega Claude Code': 'Connect Claude Code',
+  'Claude Code collegato': 'Claude Code connected',
+  'Claude Code scollegato': 'Claude Code disconnected',
+  'Vale per le sessioni di Claude Code aperte dopo il collegamento.':
+    'Applies to Claude Code sessions started after connecting.',
+  'Le impostazioni di Claude Code non sono un JSON valido: correggile e riprova':
+    'The Claude Code settings are not valid JSON: fix them and try again',
 
   // Impostazioni: Yuyu
   'Mostra Yuyu': 'Show Yuyu',
@@ -305,8 +307,8 @@ export const EN: Record<string, string> = {
   'Tutto pronto': 'All set',
   'in finestra': 'in a window',
   'sul monitor del dock': 'on the dock monitor',
-  'Quando ti servono, in Impostazioni → Collegamenti trovi i token Vercel, la cartella di Steam e gli hook per far seguire Claude Code a Yuyu.':
-    'When you need them, Settings → Connections has Vercel tokens, the Steam folder and the hooks that let Yuyu follow Claude Code.',
+  'Quando ti servono, in Impostazioni → Collegamenti trovi i token Vercel, la cartella di Steam e il collegamento con Claude Code.':
+    'When you need them, Settings → Connections has Vercel tokens, the Steam folder and the Claude Code connection.',
   Indietro: 'Back',
   'Puoi anche aggiungerli dopo': 'You can also add them later',
   'Salvo…': 'Saving…',
@@ -529,7 +531,6 @@ export const EN: Record<string, string> = {
     'No {kind} link for {name}: add it in Settings',
   'Sul monitor del dock': 'On the dock monitor',
   'In finestra (dock non collegato)': 'In a window (dock not connected)',
-  'Aggiungi il progetto Vercel nelle Impostazioni': 'Add the Vercel project in Settings',
   'Manca il token Vercel {p0}: Impostazioni → Collegamenti':
     'Missing Vercel token for {p0}: Settings → Connections',
   'Gioco non valido': 'Invalid game',
@@ -547,5 +548,13 @@ export const EN: Record<string, string> = {
   Touch: 'Touch',
   'Rimetti il puntatore dove era dopo un tocco': 'Put the pointer back after a touch',
   'Windows sposta il mouse sul dock a ogni tocco: così torna sul monitor dove stavi lavorando':
-    'Windows moves the mouse to the dock on every touch: this sends it back to the monitor you were working on'
+    'Windows moves the mouse to the dock on every touch: this sends it back to the monitor you were working on',
+  'Sito aperto nel browser': 'Site opened in the browser',
+  'Apri il sito': 'Open the site',
+  'Vuoto = lo trovo dal repo GitHub collegato a Vercel. Altrimenti nome o ID (prj_…)':
+    'Empty = found from the GitHub repo connected to Vercel. Otherwise name or ID (prj_…)',
+  'Vercel: progetto «{ref}» non trovato con questo token':
+    'Vercel: project “{ref}” not found with this token',
+  'Vercel: nessun progetto collegato a questo repo. Scrivi il nome in Impostazioni → Progetti':
+    'Vercel: no project is connected to this repo. Enter its name in Settings → Projects'
 }
