@@ -9,7 +9,8 @@
 - Custom links per project (up to 4 extra buttons).
 - The idle screen no longer depends on Yuyu; the setup has a "Look & startup" step with Yuyu as an option.
 - The 1024×600 layout scales to dock screens of any resolution.
-- Ready for public release: MIT license, CI, release workflow, app icon.
+- Ready for public release: MIT license, CI, release workflow.
+- New app icon: a monitor with the glowing dock underneath (source in `build/icon.svg`).
 
 ## 0.5.0
 

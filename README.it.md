@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="build/icon.png" width="120" alt="Yuyu, la mascotte del dock" />
+  <img src="build/icon.png" width="120" alt="Icona di Nockdock" />
 </p>
 
 <h1 align="center">Nockdock</h1>
