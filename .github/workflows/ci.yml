@@ -20,3 +20,10 @@ jobs:
       - run: pnpm lint
       - run: pnpm test
       - run: pnpm build
+      # Installer di prova: si scarica dalla pagina della run, in "Artifacts"
+      - run: pnpm exec electron-builder --win --publish never
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Nockdock-Setup
+          path: dist/*.exe
+          retention-days: 14
