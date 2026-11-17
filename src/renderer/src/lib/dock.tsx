@@ -10,7 +10,7 @@ import type {
   VercelInfo
 } from '@shared/types'
 
-export type Tab = 'home' | 'progetti' | 'scene' | 'postazione' | 'sistema'
+export type Tab = 'home' | 'progetti' | 'scene' | 'postazione'
 export type PanelKind = 'account' | 'avvisi' | 'telefono' | 'recap' | 'vercel' | { note: string }
 
 /** Sezioni della schermata Impostazioni */
@@ -24,6 +24,7 @@ export type SettingsSection =
   | 'yuyu'
   | 'postazione'
   | 'snippet'
+  | 'sistema'
 
 export interface Problem {
   projectId: string

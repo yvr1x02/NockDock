@@ -15,6 +15,7 @@ import type {
 import { ClaudeBridge, claudeHooksStatus, setClaudeHooks } from './claude'
 import { Secrets } from './secrets'
 import { knownDashboard, readVercel } from './vercel'
+import { readWeather } from './weather'
 import { findSteamGames } from './steam'
 import { readStreak } from './streak'
 import { Store } from './store'
@@ -82,7 +83,7 @@ function createWindow(): void {
     alwaysOnTop: !!dock,
     skipTaskbar: !!dock,
     focusable: !dock,
-    backgroundColor: '#21252B',
+    backgroundColor: '#1C1A1A',
     title: 'Nockdock',
     icon: app.isPackaged ? undefined : join(__dirname, '../../build/icon.png'),
     autoHideMenuBar: true,
@@ -193,6 +194,9 @@ function registerIpc(): void {
   ipcMain.handle('audio:output', (_e, id: string) => winHelper.call('output', id))
   ipcMain.handle('monitor:list', () => winHelper.call('monitors'))
   ipcMain.handle('monitor:brightness', (_e, id: string, v: number) => winHelper.call('bright', id, v))
+  ipcMain.handle('weather:get', () =>
+    readWeather(store.config.weather.city, resolveLang(store.config.language, app.getLocale()))
+  )
   ipcMain.handle('media:state', () => winHelper.call('mediastate'))
   ipcMain.handle('media:cmd', (_e, cmd: MediaCommand) =>
     ['playpause', 'next', 'prev'].includes(cmd)

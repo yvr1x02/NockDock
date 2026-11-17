@@ -28,6 +28,7 @@ export const DEFAULT_CONFIG: DockConfig = {
   display: { mode: 'auto', width: 1024, height: 600 },
   openAtLogin: true,
   restoreCursor: true,
+  weather: { enabled: true, city: '' },
   tabs: { scene: true, postazione: true },
   tabOrder: [...TAB_IDS],
   theme: 'dark',
@@ -175,6 +176,10 @@ export function normalizeConfig(raw: unknown): DockConfig {
     display,
     openAtLogin: c.openAtLogin ?? DEFAULT_CONFIG.openAtLogin,
     restoreCursor: c.restoreCursor ?? DEFAULT_CONFIG.restoreCursor,
+    weather: {
+      enabled: c.weather?.enabled ?? DEFAULT_CONFIG.weather.enabled,
+      city: typeof c.weather?.city === 'string' ? c.weather.city.slice(0, 80) : ''
+    },
     tabs: { ...DEFAULT_CONFIG.tabs, ...(c.tabs ?? {}) },
     tabOrder,
     theme: c.theme === 'light' || c.theme === 'auto' ? c.theme : 'dark',

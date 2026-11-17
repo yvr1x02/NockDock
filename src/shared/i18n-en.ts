@@ -136,8 +136,6 @@ export const EN: Record<string, string> = {
   'Vale per l’app installata; durante lo sviluppo non si registra':
     'Applies to the installed app; not registered in development',
   Schede: 'Tabs',
-  'Home, Progetti e Sistema restano sempre. Le altre puoi nasconderle.':
-    'Home, Projects and System are always there. You can hide the others.',
   'Volume per app, uscita audio, luminosità dei monitor': 'Per-app volume, audio output, monitor brightness',
 
   // Impostazioni: schermo
@@ -344,8 +342,8 @@ export const EN: Record<string, string> = {
     'A pixel-art character that walks along the top bar and reacts to what you do',
   'Dopo quanto tempo senza tocchi compare l’orologio grande (con Yuyu, se è acceso).':
     'How long without touches before the big clock appears (with Yuyu, if he’s on).',
-  'Scegli l’ordine. Home, Progetti e Sistema restano sempre; Giochi e Postazione puoi nasconderle.':
-    'Choose the order. Home, Projects and System always stay; you can hide Games and Desk.',
+  'Scegli l’ordine. Home e Progetti restano sempre; Giochi e Postazione puoi nasconderle.':
+    'Choose the order. Home and Projects always stay; you can hide Games and Desk.',
   Nascondi: 'Hide',
   Mostra: 'Show',
   'Sposta su {name}': 'Move {name} up',
@@ -556,5 +554,46 @@ export const EN: Record<string, string> = {
   'Vercel: progetto «{ref}» non trovato con questo token':
     'Vercel: project “{ref}” not found with this token',
   'Vercel: nessun progetto collegato a questo repo. Scrivi il nome in Impostazioni → Progetti':
-    'Vercel: no project is connected to this repo. Enter its name in Settings → Projects'
+    'Vercel: no project is connected to this repo. Enter its name in Settings → Projects',
+  Riprendi: 'Pick up',
+  '{n} da committare': '{n} to commit',
+  Nota: 'Note',
+  'Altri {n}': '{n} more',
+  'In riproduzione': 'Now playing',
+  'Niente in riproduzione': 'Nothing playing',
+  'commit {ago}': 'commit {ago}',
+  'server :{port}': 'server :{port}',
+  Pulsanti: 'Buttons',
+  Dettagli: 'Details',
+  Server: 'Server',
+  attivo: 'running',
+  Telefono: 'Phone',
+  online: 'online',
+  Link: 'Links',
+  Volume: 'Volume',
+  'Meno app': 'Fewer apps',
+  'Altre {n} app': '{n} more apps',
+  'Nascondi app…': 'Hide apps…',
+  'Tutti insieme': 'All together',
+  '{n} monitor': '{n} monitors',
+  'Luminosità di tutti i monitor': 'Brightness of all monitors',
+  'I monitor non accettano comandi (DDC/CI spento)': 'The monitors don’t accept commands (DDC/CI off)',
+  Sereno: 'Clear',
+  'Poco nuvoloso': 'Partly cloudy',
+  Nuvoloso: 'Cloudy',
+  Nebbia: 'Fog',
+  Pioggia: 'Rain',
+  Neve: 'Snow',
+  Temporale: 'Thunderstorm',
+  Max: 'High',
+  Min: 'Low',
+  'Meteo a riposo': 'Weather on the rest screen',
+  'Mostra il meteo accanto all’orologio': 'Show the weather next to the clock',
+  'Da Open-Meteo, gratuito e senza account': 'From Open-Meteo, free and with no account',
+  Città: 'City',
+  'es. Milano': 'e.g. London',
+  'Scegli la città nelle Impostazioni': 'Choose the city in Settings',
+  'Città non trovata: {city}': 'City not found: {city}',
+  'Meteo non disponibile': 'Weather not available',
+  'Meteo non raggiungibile: {message}': 'Weather unreachable: {message}'
 }

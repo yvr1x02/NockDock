@@ -5,7 +5,8 @@ import { Card } from '../components/ui'
 import { Icon, type IconName } from '../components/Icon'
 import { t } from '../lib/i18n'
 
-export function Sistema() {
+/** Risorse del PC, snippet da copiare e azioni rapide; dalla 0.7 sta nelle Impostazioni → Sistema */
+export function Sistema({ embedded = false }: { embedded?: boolean }) {
   const { config, run, openSettings } = useDock()
   const [s, setS] = useState<SystemStats | null>(null)
   const [display, setDisplay] = useState<DisplayInfo | null>(null)
@@ -58,27 +59,31 @@ export function Sistema() {
         )}
       </Card>
 
-      <section className="grid min-w-0 grid-cols-2 grid-rows-3 gap-3">
+      <section className={`grid min-w-0 grid-cols-2 gap-3 ${embedded ? 'grid-rows-2' : 'grid-rows-3'}`}>
         <Tile
           icon="camera"
           label={t('Screenshot')}
           onClick={() => run(api.screenshot(), t('Seleziona l’area da catturare'))}
         />
         <Tile icon="lock" label={t('Blocca PC')} onClick={() => run(api.lockPc(), t('PC bloccato'))} />
-        <Tile
-          icon="gear"
-          label={t('Impostazioni')}
-          sub={t('schermo, account, progetti, Yuyu')}
-          wide
-          onClick={() => openSettings()}
-        />
-        <Tile
-          icon="open"
-          label={t('Collegamenti')}
-          sub={t('token Vercel e Claude Code')}
-          wide
-          onClick={() => openSettings('collegamenti')}
-        />
+        {!embedded && (
+          <>
+            <Tile
+              icon="gear"
+              label={t('Impostazioni')}
+              sub={t('schermo, account, progetti, Yuyu')}
+              wide
+              onClick={() => openSettings()}
+            />
+            <Tile
+              icon="open"
+              label={t('Collegamenti')}
+              sub={t('token Vercel e Claude Code')}
+              wide
+              onClick={() => openSettings('collegamenti')}
+            />
+          </>
+        )}
       </section>
     </div>
   )

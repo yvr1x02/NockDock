@@ -71,8 +71,9 @@ export interface Snippet {
 
 /** Schede che si possono nascondere (Home, Progetti e Sistema restano sempre) */
 export type OptionalTab = 'scene' | 'postazione'
-export type TabId = 'home' | 'progetti' | 'scene' | 'postazione' | 'sistema'
-export const TAB_IDS: TabId[] = ['home', 'progetti', 'scene', 'postazione', 'sistema']
+/** Schede in basso. Sistema dalla 0.7 sta nelle Impostazioni */
+export type TabId = 'home' | 'progetti' | 'scene' | 'postazione'
+export const TAB_IDS: TabId[] = ['home', 'progetti', 'scene', 'postazione']
 
 /** Riquadri della Home che si possono nascondere (Riprendi resta sempre) */
 export type HomeCard = 'alerts' | 'recent' | 'resources' | 'streak' | 'recap'
@@ -114,6 +115,8 @@ export interface DockConfig {
   idleMinutes: number
   /** Dopo un tocco sul dock il puntatore torna dove era sugli altri monitor */
   restoreCursor: boolean
+  /** Meteo nella schermata di riposo */
+  weather: { enabled: boolean; city: string }
   home: Record<HomeCard, boolean>
   projectActions: Record<ProjectAction, boolean>
   snippets: Snippet[]
@@ -200,6 +203,21 @@ export interface MonitorBrightness {
 }
 
 export type MediaCommand = 'playpause' | 'next' | 'prev'
+
+/** Meteo della città scelta: adesso, la giornata e le prossime ore (codici meteo WMO) */
+export interface WeatherInfo {
+  ok: boolean
+  error?: string
+  city?: string
+  temp?: number
+  code?: number
+  day?: boolean
+  max?: number
+  min?: number
+  /** Probabilità di pioggia della giornata, in % */
+  rain?: number
+  hours?: { hour: number; temp: number; code: number; day: boolean }[]
+}
 
 /** Cosa sta suonando, letto dai controlli multimediali di Windows */
 export interface MediaState {
@@ -343,6 +361,7 @@ export interface DockApi {
   setBrightness(id: string, value: number): Promise<ActionResult>
   media(cmd: MediaCommand): Promise<ActionResult>
   mediaState(): Promise<MediaState>
+  getWeather(): Promise<WeatherInfo>
   /** Fine di un tocco sul dock: rimette il puntatore al suo posto */
   touchEnd(): void
   openConfig(): Promise<ActionResult>

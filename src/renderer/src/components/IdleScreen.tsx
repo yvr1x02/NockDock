@@ -1,17 +1,24 @@
 import { useEffect, useState } from 'react'
 import { Buddy, type BuddyClaude } from './Buddy'
+import { WeatherPanel, useWeather } from './Weather'
 import { isNight } from '../lib/buddyBus'
 import { t, locale } from '../lib/i18n'
 
-/** Schermata di riposo: orologio grande e il personaggio che gira per lo schermo. Un tocco la chiude. */
+/**
+ * Schermata di riposo: orologio grande, meteo a destra se acceso, e il personaggio che gira
+ * per lo schermo. Un tocco la chiude.
+ */
 export function IdleScreen({
   buddy,
+  weather,
   working,
   claude,
   onWake
 }: {
   /** Con Yuyu spento resta solo l'orologio */
   buddy: boolean
+  /** Meteo acceso e con una città scelta */
+  weather: boolean
   working: boolean
   claude: BuddyClaude
   onWake: () => void
@@ -22,6 +29,11 @@ export function IdleScreen({
     return () => clearInterval(timer)
   }, [])
   const night = isNight(now)
+  const w = useWeather(weather)
+  const side = weather && w !== null
+
+  const time = now.toLocaleTimeString(locale(), { hour: '2-digit', minute: '2-digit' })
+  const date = now.toLocaleDateString(locale(), { weekday: 'long', day: 'numeric', month: 'long' })
 
   return (
     <div
@@ -30,14 +42,28 @@ export function IdleScreen({
       data-theme="dark"
       aria-label={t('Riattiva il dock')}
       onPointerDown={onWake}
-      className={`absolute inset-0 z-40 flex flex-col items-center bg-deep ${night ? 'opacity-70' : ''}`}
+      className={`absolute inset-0 z-40 bg-deep ${night ? 'opacity-70' : ''}`}
     >
-      <span className="mt-16 font-mono text-[112px] leading-none font-medium tracking-tighter text-ink">
-        {now.toLocaleTimeString(locale(), { hour: '2-digit', minute: '2-digit' })}
-      </span>
-      <span className="mt-3 text-xl text-muted capitalize">
-        {now.toLocaleDateString(locale(), { weekday: 'long', day: 'numeric', month: 'long' })}
-      </span>
+      {side ? (
+        <>
+          <div className="absolute top-[72px] left-16 flex flex-col gap-2">
+            <span className="font-mono text-[132px] leading-none font-light tracking-tighter text-ink">
+              {time}
+            </span>
+            <span className="text-[22px] text-muted capitalize">{date}</span>
+          </div>
+          <div className="absolute top-[84px] right-16">
+            <WeatherPanel w={w} />
+          </div>
+        </>
+      ) : (
+        <div className="flex flex-col items-center">
+          <span className="mt-16 font-mono text-[112px] leading-none font-medium tracking-tighter text-ink">
+            {time}
+          </span>
+          <span className="mt-3 text-xl text-muted capitalize">{date}</span>
+        </div>
+      )}
       {buddy && (
         <div className="pointer-events-none absolute right-0 bottom-10 left-0 h-[192px]">
           <div className="absolute right-10 bottom-0 left-10 h-px bg-divider" />
@@ -52,7 +78,9 @@ export function IdleScreen({
           />
         </div>
       )}
-      <span className="absolute bottom-3 text-xs text-dim">{t('Tocca per tornare al dock')}</span>
+      <span className="absolute bottom-3 left-0 w-full text-center text-xs text-dim">
+        {t('Tocca per tornare al dock')}
+      </span>
     </div>
   )
 }

@@ -90,6 +90,23 @@ export function GeneralSection({ draft, patch }: SectionProps) {
           sub={t('Vale per l’app installata; durante lo sviluppo non si registra')}
         />
       </Group>
+      <Group title={t('Meteo a riposo')}>
+        <Toggle
+          checked={draft.weather.enabled}
+          onChange={(v) => patch((d) => ({ ...d, weather: { ...d.weather, enabled: v } }))}
+          label={t('Mostra il meteo accanto all’orologio')}
+          sub={t('Da Open-Meteo, gratuito e senza account')}
+        />
+        {draft.weather.enabled && (
+          <Field label={t('Città')}>
+            <TextInput
+              value={draft.weather.city}
+              placeholder={t('es. Milano')}
+              onChange={(v) => patch((d) => ({ ...d, weather: { ...d.weather, city: v } }))}
+            />
+          </Field>
+        )}
+      </Group>
       <Group title={t('Touch')}>
         <Toggle
           checked={draft.restoreCursor}
@@ -110,8 +127,7 @@ const TAB_LABEL: Record<TabId, string> = {
   home: 'Home',
   progetti: 'Progetti',
   scene: 'Giochi',
-  postazione: 'Postazione',
-  sistema: 'Sistema'
+  postazione: 'Postazione'
 }
 const HOME_LABEL: Record<HomeCard, [string, string]> = {
   alerts: ['Da sistemare', 'Gli avvisi: deploy in errore, Claude Code che aspetta, repo non trovati'],
@@ -187,9 +203,7 @@ export function AppearanceSection({ draft, patch }: SectionProps) {
       </Group>
       <Group title={t('Schede')}>
         <p className="m-0 text-[13px] text-muted">
-          {t(
-            'Scegli l’ordine. Home, Progetti e Sistema restano sempre; Giochi e Postazione puoi nasconderle.'
-          )}
+          {t('Scegli l’ordine. Home e Progetti restano sempre; Giochi e Postazione puoi nasconderle.')}
         </p>
         <div className="flex flex-col gap-1.5">
           {draft.tabOrder.map((id, i) => {
@@ -240,7 +254,7 @@ export function AppearanceSection({ draft, patch }: SectionProps) {
       <Group title={t('Riquadri della Home')}>
         <p className="m-0 text-[13px] text-muted">{t('“Riprendi da dove avevi lasciato” resta sempre.')}</p>
         <div className="grid grid-cols-2 gap-2.5">
-          {HOME_CARDS.map((k) => (
+          {HOME_CARDS.filter((k) => k !== 'streak' && k !== 'recap').map((k) => (
             <Toggle
               key={k}
               checked={draft.home[k]}

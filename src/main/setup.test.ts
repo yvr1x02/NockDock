@@ -40,7 +40,7 @@ describe('configurazione', () => {
     expect(c.buddy).toEqual({ enabled: true, sleepFrom: 23, sleepTo: 7 })
     // i minuti della schermata di riposo escono da "buddy" e restano gli stessi
     expect(c.idleMinutes).toBe(5)
-    expect(c.tabOrder).toEqual(['home', 'progetti', 'scene', 'postazione', 'sistema'])
+    expect(c.tabOrder).toEqual(['home', 'progetti', 'scene', 'postazione'])
     expect(c.theme).toBe('dark')
     expect(Object.values(c.home).every(Boolean)).toBe(true)
   })
@@ -83,7 +83,7 @@ describe('configurazione', () => {
         }
       ]
     })
-    expect(c.tabOrder).toEqual(['sistema', 'home', 'progetti', 'scene', 'postazione'])
+    expect(c.tabOrder).toEqual(['home', 'progetti', 'scene', 'postazione'])
     expect(c.home.streak).toBe(false)
     expect(c.home.recap).toBe(true)
     expect(c.projectActions.supabase).toBe(false)

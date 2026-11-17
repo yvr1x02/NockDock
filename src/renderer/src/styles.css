@@ -1,30 +1,30 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-ground: #21252b;
-  --color-card: #2b3037;
-  --color-raised: #363c45;
-  --color-line: #474e59;
-  --color-line-strong: #5d6572;
-  --color-dash: #6c7481;
-  --color-ink: #e8eaed;
-  --color-soft: #c4c8ce;
-  --color-muted: #9aa0a6;
-  --color-dim: #828995;
+  --color-ground: #1c1a1a;
+  --color-card: #262323;
+  --color-raised: #312d2d;
+  --color-line: #363131;
+  --color-line-strong: #4f4949;
+  --color-dash: #625b5b;
+  --color-ink: #f2eeee;
+  --color-soft: #d0c8c8;
+  --color-muted: #a39a9a;
+  --color-dim: #8a8181;
   --color-ok: #3dd68c;
   --color-warn: #f5c451;
   --color-err: #ffa24c;
-  --color-divider: #3b414b;
-  --color-panel: #292d34;
-  --color-panel-line: #555d69;
+  --color-divider: #2e2a2a;
+  --color-panel: #2a2626;
+  --color-panel-line: #4f4949;
   --color-scrim: rgba(5, 6, 8, 0.74);
   --color-deep: #07080a;
-  --color-tab: #8a9099;
+  --color-tab: #a39a9a;
   --color-warn-soft: #f5d27a;
-  --color-warn-bg: #352e1c;
-  --color-warn-line: #4a3f22;
+  --color-warn-bg: #2f2818;
+  --color-warn-line: #443a1f;
   --color-ok-line: #1f4a35;
-  --color-thumb: #5d6572;
+  --color-thumb: #4f4949;
   --font-sans: 'Geist', 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif;
   --font-mono: 'Geist Mono', 'Cascadia Mono', Consolas, ui-monospace, monospace;
 }
@@ -73,29 +73,29 @@
 }
 
 [data-theme='dark'] {
-  --color-ground: #21252b;
-  --color-card: #2b3037;
-  --color-raised: #363c45;
-  --color-line: #474e59;
-  --color-line-strong: #5d6572;
-  --color-dash: #6c7481;
-  --color-ink: #e8eaed;
-  --color-soft: #c4c8ce;
-  --color-muted: #9aa0a6;
-  --color-dim: #828995;
+  --color-ground: #1c1a1a;
+  --color-card: #262323;
+  --color-raised: #312d2d;
+  --color-line: #363131;
+  --color-line-strong: #4f4949;
+  --color-dash: #625b5b;
+  --color-ink: #f2eeee;
+  --color-soft: #d0c8c8;
+  --color-muted: #a39a9a;
+  --color-dim: #8a8181;
   --color-ok: #3dd68c;
   --color-warn: #f5c451;
   --color-err: #ffa24c;
-  --color-divider: #3b414b;
-  --color-panel: #292d34;
-  --color-panel-line: #555d69;
+  --color-divider: #2e2a2a;
+  --color-panel: #2a2626;
+  --color-panel-line: #4f4949;
   --color-scrim: rgba(5, 6, 8, 0.74);
-  --color-tab: #8a9099;
+  --color-tab: #a39a9a;
   --color-warn-soft: #f5d27a;
-  --color-warn-bg: #352e1c;
-  --color-warn-line: #4a3f22;
+  --color-warn-bg: #2f2818;
+  --color-warn-line: #443a1f;
   --color-ok-line: #1f4a35;
-  --color-thumb: #5d6572;
+  --color-thumb: #4f4949;
 }
 
 html,

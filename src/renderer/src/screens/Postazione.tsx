@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { AudioState, MediaCommand, MediaState, MonitorBrightness } from '@shared/types'
+import type { AudioState, MonitorBrightness } from '@shared/types'
+import { useMedia } from '../lib/media'
 import { api, useDock } from '../lib/dock'
 import { Card } from '../components/ui'
 import { Icon } from '../components/Icon'
@@ -44,6 +45,8 @@ export function Postazione() {
   const [audio, setAudio] = useState<AudioState | null>(null)
   const [monitors, setMonitors] = useState<MonitorBrightness[] | null>(null)
   const [monitorError, setMonitorError] = useState('')
+  const [allApps, setAllApps] = useState(false)
+  const [eachMonitor, setEachMonitor] = useState(false)
 
   const refresh = useCallback(async () => {
     const a = await api.getAudio()
@@ -74,6 +77,10 @@ export function Postazione() {
   const sendApp = useThrottled((key: string, v: number) => void api.setAppVolume(key, v))
   const sendMaster = useThrottled((v: number) => void api.setMasterVolume(v))
   const sendBright = useThrottled((id: string, v: number) => void api.setBrightness(id, v), 150)
+  const sendBrightAll = useThrottled(
+    (ids: string[], v: number) => ids.forEach((id) => void api.setBrightness(id, v)),
+    150
+  )
 
   const report = (r: { ok: boolean; error?: string }): void => {
     if (!r.ok) say(r.error ?? t('Non riuscito'), true)
@@ -91,9 +98,38 @@ export function Postazione() {
   const hidden = new Set(config.postazione.hiddenApps)
   const apps = (audio?.apps ?? []).filter((a) => !hidden.has(a.key))
 
+  // Le prime tre app in vista, le altre a un tocco
+  const shownApps = allApps ? apps : apps.slice(0, 3)
+  const allBright = monitors?.filter((m) => m.ok) ?? []
+  const avgBright = allBright.length
+    ? Math.round(allBright.reduce((n, m) => n + m.brightness, 0) / allBright.length)
+    : 0
+
   return (
-    <div className="grid h-full grid-cols-[1fr_270px_250px] gap-3">
-      <Card title={t('Volume per app')} className="gap-1">
+    <div className="grid h-full grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] gap-3">
+      <Card className="gap-4 p-5">
+        <span className="text-[13px] font-semibold tracking-[0.04em] text-muted uppercase">
+          {t('Volume')}
+        </span>
+        {audio && (
+          <VolumeRow
+            name={t('Generale')}
+            big
+            volume={audio.master.volume}
+            muted={audio.master.muted}
+            onVolume={(v) => {
+              hold('master')
+              setAudio((s) => s && { ...s, master: { ...s.master, volume: v } })
+              sendMaster(v)
+            }}
+            onMute={async () => {
+              hold('master')
+              setAudio((s) => s && { ...s, master: { ...s.master, muted: !s.master.muted } })
+              report(await api.setMasterMute(!audio.master.muted))
+            }}
+          />
+        )}
+        <div className="h-px shrink-0 bg-divider" />
         <div className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto pr-1">
           {!audio && <span className="text-sm text-muted">{t('Leggo il mixer di Windows…')}</span>}
           {audio && apps.length === 0 && (
@@ -101,7 +137,7 @@ export function Postazione() {
               {t('Nessuna app sta usando l’audio in questo momento.')}
             </span>
           )}
-          {apps.map((a) => (
+          {shownApps.map((a) => (
             <VolumeRow
               key={a.key}
               name={a.key === 'system' ? t('Suoni di sistema') : a.name}
@@ -125,67 +161,91 @@ export function Postazione() {
             />
           ))}
         </div>
-        <button
-          type="button"
-          onClick={() => openSettings('postazione')}
-          className="h-9 shrink-0 self-start rounded-lg px-1 text-xs text-muted"
-        >
-          {t('Nascondi app dal mixer…')}
-        </button>
-      </Card>
-
-      <Card title={t('Uscita')} className="gap-3">
-        {audio && (
-          <VolumeRow
-            name={t('Generale')}
-            big
-            volume={audio.master.volume}
-            muted={audio.master.muted}
-            onVolume={(v) => {
-              hold('master')
-              setAudio((s) => s && { ...s, master: { ...s.master, volume: v } })
-              sendMaster(v)
-            }}
-            onMute={async () => {
-              hold('master')
-              setAudio((s) => s && { ...s, master: { ...s.master, muted: !s.master.muted } })
-              report(await api.setMasterMute(!audio.master.muted))
-            }}
-          />
-        )}
-        <div className="flex min-h-0 flex-1 flex-col gap-1.5 overflow-y-auto">
-          {audio?.devices.map((d) => (
+        <div className="flex shrink-0 items-center gap-2">
+          {apps.length > 3 && (
             <button
-              key={d.id}
               type="button"
-              onClick={async () => {
-                if (d.isDefault) return
-                const r = await api.setOutputDevice(d.id)
-                if (r.ok) say(t('Audio su {name}', { name: d.name }))
-                else report(r)
-                refresh()
-              }}
-              className={`flex min-h-12 shrink-0 items-center gap-2.5 rounded-xl border px-3 py-1.5 text-left text-sm ${
-                d.isDefault
-                  ? 'border-accent bg-accent-tint font-semibold text-accent-text'
-                  : 'border-line-strong bg-raised'
-              }`}
+              onClick={() => setAllApps((x) => !x)}
+              className="h-10 rounded-xl border border-line-strong bg-raised px-4 text-sm"
             >
-              <Icon name={/cuff|head|aur|buds|airpods/i.test(d.name) ? 'headphones' : 'volume'} size={18} />
-              <span className="line-clamp-2 leading-tight">{d.name}</span>
+              {allApps ? t('Meno app') : t('Altre {n} app', { n: apps.length - 3 })}
             </button>
-          ))}
+          )}
+          <button
+            type="button"
+            onClick={() => openSettings('postazione')}
+            className="ml-auto h-10 px-1 text-xs text-muted"
+          >
+            {t('Nascondi app…')}
+          </button>
         </div>
       </Card>
 
       <div className="flex min-h-0 flex-col gap-3">
-        <Card title={t('Luminosità')} className="min-h-0 flex-1 gap-2">
-          <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
-            {!monitors && !monitorError && (
-              <span className="text-sm text-muted">{t('Cerco i monitor…')}</span>
+        <Card className="shrink-0 gap-2.5">
+          <span className="text-[13px] font-semibold tracking-[0.04em] text-muted uppercase">
+            {t('Uscita')}
+          </span>
+          <div className="grid max-h-[112px] grid-cols-3 gap-2 overflow-y-auto">
+            {audio?.devices.map((d) => (
+              <button
+                key={d.id}
+                type="button"
+                title={d.name}
+                onClick={async () => {
+                  if (d.isDefault) return
+                  const r = await api.setOutputDevice(d.id)
+                  if (r.ok) say(t('Audio su {name}', { name: d.name }))
+                  else report(r)
+                  refresh()
+                }}
+                className={`h-12 truncate rounded-xl border px-2 text-[15px] ${
+                  d.isDefault
+                    ? 'border-accent bg-accent-tint font-semibold text-accent-text'
+                    : 'border-line-strong bg-raised'
+                }`}
+              >
+                {shortDevice(d.name)}
+              </button>
+            ))}
+          </div>
+        </Card>
+
+        <Card className="shrink-0 gap-3">
+          <span className="flex items-center justify-between">
+            <span className="text-[13px] font-semibold tracking-[0.04em] text-muted uppercase">
+              {t('Luminosità')}
+            </span>
+            {monitors && monitors.length > 1 && (
+              <button
+                type="button"
+                onClick={() => setEachMonitor((x) => !x)}
+                className="text-[13px] text-muted"
+              >
+                {eachMonitor ? t('Tutti insieme') : t('{n} monitor', { n: monitors.length })}
+              </button>
             )}
-            {monitorError && <span className="text-sm text-muted">{monitorError}</span>}
-            {monitors?.map((m) => (
+          </span>
+          {!monitors && !monitorError && <span className="text-sm text-muted">{t('Cerco i monitor…')}</span>}
+          {monitorError && <span className="text-sm text-muted">{monitorError}</span>}
+          {monitors && !eachMonitor && allBright.length > 0 && (
+            <Slider
+              label={t('Luminosità di tutti i monitor')}
+              value={avgBright}
+              onChange={(v) => {
+                setMonitors((list) => list?.map((x) => (x.ok ? { ...x, brightness: v } : x)) ?? null)
+                sendBrightAll(
+                  allBright.map((m) => m.id),
+                  v
+                )
+              }}
+            />
+          )}
+          {monitors && !eachMonitor && allBright.length === 0 && (
+            <span className="text-sm text-muted">{t('I monitor non accettano comandi (DDC/CI spento)')}</span>
+          )}
+          {eachMonitor &&
+            monitors?.map((m) => (
               <div key={m.id} className="flex flex-col gap-0.5">
                 <span className="flex items-center justify-between gap-2 text-[13px]">
                   <span className="truncate">{m.name}</span>
@@ -206,12 +266,16 @@ export function Postazione() {
                 />
               </div>
             ))}
-          </div>
         </Card>
         <Music report={report} />
       </div>
     </div>
   )
+}
+
+/** "Altoparlanti (Realtek High Definition Audio)" → "Altoparlanti" */
+function shortDevice(name: string): string {
+  return name.replace(/\s*\(.*\)\s*$/, '').trim() || name
 }
 
 function Slider({
@@ -286,36 +350,16 @@ function VolumeRow(props: {
  * se Windows non lo sa dire, si alterna a ogni tocco.
  */
 function Music({ report }: { report: (r: { ok: boolean; error?: string }) => void }) {
-  const [state, setState] = useState<MediaState | null>(null)
-  const [playing, setPlaying] = useState(false)
-
-  const apply = useCallback((s: MediaState): void => {
-    setState(s)
-    if (s.ok) setPlaying(s.status === 'playing')
-  }, [])
-  const read = useCallback((): void => void api.mediaState().then(apply), [apply])
-
-  useEffect(() => {
-    const tick = (): void => void api.mediaState().then(apply)
-    tick()
-    const timer = setInterval(tick, POLL_MS)
-    return () => clearInterval(timer)
-  }, [apply])
-
-  const press = (cmd: MediaCommand): void => {
-    if (cmd === 'playpause') setPlaying((p) => !p)
-    void api.media(cmd).then((r) => {
-      report(r)
-      // Il lettore ci mette un attimo a cambiare stato
-      setTimeout(read, 600)
-    })
-  }
-
-  const track = state?.ok && state.title ? [state.title, state.artist].filter(Boolean).join(' · ') : ''
+  const { playing, track, press } = useMedia(report)
 
   return (
-    <Card title={t('Musica')} className="shrink-0 gap-2">
-      {track && <span className="-mt-1 truncate text-xs text-muted">{track}</span>}
+    <Card className="min-h-0 flex-1 justify-between gap-2">
+      <span className="text-[13px] font-semibold tracking-[0.04em] text-muted uppercase">{t('Musica')}</span>
+      {track && (
+        <span className="-mt-1 truncate text-xs text-muted">
+          {[track.title, track.artist].filter(Boolean).join(' · ')}
+        </span>
+      )}
       <div className="grid grid-cols-3 gap-2">
         <MediaButton icon="prev" label={t('Brano precedente')} onClick={() => press('prev')} />
         <MediaButton

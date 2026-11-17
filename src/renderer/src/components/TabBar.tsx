@@ -6,8 +6,7 @@ const TABS: { id: Tab; label: string; icon: IconName }[] = [
   { id: 'home', label: 'Home', icon: 'home' },
   { id: 'progetti', label: 'Progetti', icon: 'folder' },
   { id: 'scene', label: 'Giochi', icon: 'scene' },
-  { id: 'postazione', label: 'Postazione', icon: 'sliders' },
-  { id: 'sistema', label: 'Sistema', icon: 'chip' }
+  { id: 'postazione', label: 'Postazione', icon: 'sliders' }
 ]
 
 export function TabBar({ tab }: { tab: Tab }) {
@@ -19,7 +18,7 @@ export function TabBar({ tab }: { tab: Tab }) {
     .filter((x) => !(x.id === 'scene' || x.id === 'postazione') || config.tabs[x.id])
   return (
     <nav
-      className="grid h-[68px] shrink-0 gap-1.5 border-t border-divider px-5 py-1.5"
+      className="grid h-16 shrink-0 gap-2 px-4 pb-2"
       style={{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}
     >
       {tabs.map((tab_) => {
@@ -32,8 +31,8 @@ export function TabBar({ tab }: { tab: Tab }) {
               setTab(tab_.id)
               openPanel(null)
             }}
-            className={`flex flex-col items-center justify-center gap-1 rounded-xl text-xs font-semibold ${
-              active ? 'bg-accent-tint text-accent-text' : 'text-tab'
+            className={`flex items-center justify-center gap-2.5 rounded-[14px] text-base ${
+              active ? 'bg-accent-tint font-semibold text-accent-text' : 'font-medium text-tab'
             }`}
           >
             <Icon name={tab_.icon} size={22} />

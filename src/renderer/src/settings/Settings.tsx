@@ -16,19 +16,25 @@ import {
   YuyuSection,
   type SectionProps
 } from './sections'
+import { Sistema } from '../screens/Sistema'
 import { t } from '../lib/i18n'
 
 const SECTIONS: { id: SettingsSection; label: string; icon: IconName }[] = [
   { id: 'generale', label: 'Generale', icon: 'gear' },
   { id: 'aspetto', label: 'Aspetto', icon: 'sun' },
-  { id: 'schermo', label: 'Schermo', icon: 'scene' },
   { id: 'account', label: 'Account', icon: 'user' },
   { id: 'progetti', label: 'Progetti', icon: 'folder' },
   { id: 'collegamenti', label: 'Collegamenti', icon: 'open' },
-  { id: 'yuyu', label: 'Yuyu', icon: 'sparkle' },
-  { id: 'postazione', label: 'Postazione', icon: 'sliders' },
-  { id: 'snippet', label: 'Snippet', icon: 'clipboard' }
+  { id: 'sistema', label: 'Sistema', icon: 'chip' }
 ]
+
+/** Le sezioni piccole stanno dentro quelle grandi: Schermo in Generale, Yuyu in Aspetto, il resto in Sistema */
+const MERGED: Partial<Record<SettingsSection, SettingsSection>> = {
+  schermo: 'generale',
+  yuyu: 'aspetto',
+  postazione: 'sistema',
+  snippet: 'sistema'
+}
 
 /** Controlla la bozza prima di salvare: restituisce il primo problema, se c'è */
 export function validate(d: DockConfig): string | null {
@@ -48,7 +54,7 @@ export function validate(d: DockConfig): string | null {
 export function Settings({ section, onClose }: { section: SettingsSection; onClose: () => void }) {
   const { config, state, say } = useDock()
   const [draft, setDraft] = useState<DockConfig>(config)
-  const [current, setCurrent] = useState<SettingsSection>(section)
+  const [current, setCurrent] = useState<SettingsSection>(MERGED[section] ?? section)
   const [saving, setSaving] = useState(false)
   const dirty = useMemo(() => JSON.stringify(draft) !== JSON.stringify(config), [draft, config])
 
@@ -117,15 +123,30 @@ export function Settings({ section, onClose }: { section: SettingsSection; onClo
           </button>
         </nav>
         <div className="min-h-0 min-w-0 flex-1 overflow-y-auto p-5">
-          {current === 'generale' && <GeneralSection {...props} />}
-          {current === 'aspetto' && <AppearanceSection {...props} />}
-          {current === 'schermo' && <DisplaySection {...props} />}
+          {current === 'generale' && (
+            <div className="flex flex-col gap-8">
+              <GeneralSection {...props} />
+              <DisplaySection {...props} />
+            </div>
+          )}
+          {current === 'aspetto' && (
+            <div className="flex flex-col gap-8">
+              <AppearanceSection {...props} />
+              <YuyuSection {...props} />
+            </div>
+          )}
           {current === 'account' && <AccountsSection {...props} />}
           {current === 'progetti' && <ProjectsSection {...props} />}
           {current === 'collegamenti' && <LinksSection {...props} />}
-          {current === 'yuyu' && <YuyuSection {...props} />}
-          {current === 'postazione' && <PostazioneSection {...props} />}
-          {current === 'snippet' && <SnippetSection {...props} />}
+          {current === 'sistema' && (
+            <div className="flex flex-col gap-8">
+              <div className="h-[300px]">
+                <Sistema embedded />
+              </div>
+              <SnippetSection {...props} />
+              <PostazioneSection {...props} />
+            </div>
+          )}
         </div>
       </div>
     </div>

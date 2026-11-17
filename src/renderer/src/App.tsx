@@ -21,7 +21,6 @@ import { Toast } from './components/ui'
 import { Home } from './screens/Home'
 import { Projects } from './screens/Projects'
 import { Postazione } from './screens/Postazione'
-import { Sistema } from './screens/Sistema'
 import { AccountPanel } from './panels/AccountPanel'
 import { AlertsPanel } from './panels/AlertsPanel'
 import { PhonePanel } from './panels/PhonePanel'
@@ -135,11 +134,11 @@ export function App() {
     return () => clearInterval(timer)
   }, [refreshGit])
 
-  // Vercel: solo i progetti con vercelProject, ogni due minuti
+  // Vercel: ogni due minuti; il progetto si trova anche dal repo GitHub
   const refreshVercel = useCallback(
     async (id?: string) => {
       if (!config) return
-      const list = config.projects.filter((p) => p.vercelProject && (!id || p.id === id))
+      const list = config.projects.filter((p) => !id || p.id === id)
       const results = await Promise.all(list.map(async (p) => [p.id, await api.getVercel(p.id)] as const))
       setVercel((v) => ({ ...v, ...Object.fromEntries(results) }))
     },
@@ -370,7 +369,6 @@ export function App() {
           {shown === 'progetti' && <Projects />}
           {shown === 'scene' && <Svago />}
           {shown === 'postazione' && <Postazione />}
-          {shown === 'sistema' && <Sistema />}
         </main>
         <TabBar tab={shown} />
         {panel === 'account' && <AccountPanel />}
@@ -384,6 +382,7 @@ export function App() {
         {idle && (
           <IdleScreen
             buddy={ctx.config.buddy.enabled}
+            weather={ctx.config.weather.enabled && !!ctx.config.weather.city.trim()}
             working={working}
             claude={buddyClaude}
             onWake={() => {

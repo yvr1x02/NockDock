@@ -97,7 +97,7 @@ The Desk tab talks to Windows through a small C# helper ([`src/main/win/DockHelp
 
 ## Configuration
 
-Everything can be changed from the dock in **System → Settings**. The configuration also lives in `%APPDATA%\Nockdock\config.json` for anyone who prefers editing it by hand: the dock reloads it when you save. Notes and app state are in `state.json`, never in your repos.
+Everything can be changed from the dock from the gear in the top bar (**Settings**). The configuration also lives in `%APPDATA%\Nockdock\config.json` for anyone who prefers editing it by hand: the dock reloads it when you save. Notes and app state are in `state.json`, never in your repos.
 
 ## Translations
 

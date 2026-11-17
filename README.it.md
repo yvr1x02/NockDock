@@ -83,7 +83,7 @@ La Postazione parla con Windows tramite un piccolo aiutante in C# ([`src/main/wi
 
 ## Configurazione
 
-Tutto si cambia dal dock in **Sistema → Impostazioni**. La configurazione sta anche in `%APPDATA%\Nockdock\config.json` per chi preferisce modificarla a mano: il dock la ricarica quando salvi. Le note e lo stato dell'app sono in `state.json`, mai nei repo.
+Tutto si cambia dal dock con l’ingranaggio in alto (**Impostazioni**). La configurazione sta anche in `%APPDATA%\Nockdock\config.json` per chi preferisce modificarla a mano: il dock la ricarica quando salvi. Le note e lo stato dell'app sono in `state.json`, mai nei repo.
 
 ## Traduzioni
 

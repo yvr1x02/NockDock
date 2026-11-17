@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- New look: warm dark background, simpler screens, shorter labels.
+- Four tabs (Home, Projects, Games, Desk). System moved to Settings → System; the gear in the top bar opens Settings.
+- Home: pick up the last project, what needs attention, now playing, recent projects and CPU/RAM.
+- Projects: six large buttons; uncommitted files, commits and note one tap away.
+- Desk: master volume plus the three main apps, output as buttons, one brightness slider for all monitors.
+- Weather on the rest screen (Open-Meteo, no account): now, high/low, rain and the next hours. Set the city in Settings → General.
+- Settings grouped into six sections.
+- Vercel deploys are read for every project, not only those with a project name set.
 - Claude Code: one button in Settings → Connections adds or removes the hooks; no paths to copy by hand.
 - Vercel: the project is matched to the GitHub repo it deploys from (any letter case) and the right team is found automatically; new “Open the site” button that opens the public domain; the dashboard link works without typing it.
 - Music: the play/pause button follows what Windows is playing, with the track title.
